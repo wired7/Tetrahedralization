@@ -18,7 +18,7 @@ public:
 	template <typename embeddingDimVector>
 	static double getSimplexOrientation(std::vector<embeddingDimVector> points)
 	{
-		int columns = max(points.size(), points[0].length());
+		int columns = std::max((int)points.size(), (int)points[0].length());
 		int leftover = columns - points[0].length();
 
 		Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> matrix(columns, columns);
@@ -37,7 +37,7 @@ public:
 			}
 		}
 
-		return sign(matrix.determinant());
+		return glm::sign(matrix.determinant());
 	}
 
 	static Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> originalEdgePseudo;
@@ -64,8 +64,6 @@ public:
 				rowCount++;
 			}
 		}
-
-//		std::cout << gramianMatrix << std::endl << std::endl;
 		
 		double det11 = sign(gramianMatrix.determinant());
 		

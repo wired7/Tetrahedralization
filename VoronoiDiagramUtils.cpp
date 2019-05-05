@@ -1,16 +1,12 @@
 #pragma once
 #include "VoronoiDiagramUtils.h"
-
-#pragma once
-#include <map>
+#include "ParametricShapes.h"
+#include "HalfSimplices.h"
+#include "LinearAlgebraUtils.h"
 #include <Eigen/Dense>
 
-ImplicitGeo::Sphere VoronoiDiagramUtils::getCircumcircle(glm::vec3 points[3])
-{
-	return ImplicitGeo::Sphere(glm::vec3(), 0);
-}
-
-ImplicitGeo::Sphere VoronoiDiagramUtils::getCircumsphere(glm::vec3 points[4])
+// TODO: Should generalize to N dimensions (N + 1 pts)
+Parametric::Sphere VoronoiDiagramUtils::getCircumsphere(glm::vec3 points[4])
 {
 	Eigen::Matrix4d a;
 
@@ -50,22 +46,12 @@ ImplicitGeo::Sphere VoronoiDiagramUtils::getCircumsphere(glm::vec3 points[4])
 
 	double radius = glm::length(points[3] - center);
 
-	return ImplicitGeo::Sphere(center, radius);
+	return Parametric::Sphere(center, radius);
 }
 
-bool VoronoiDiagramUtils::isSpaceDegenerate(glm::vec3 points[4])
+bool VoronoiDiagramUtils::isSpaceDegenerate(std::vector<glm::vec3> points)
 {
-	glm::vec3 diff1 = points[0] - points[3];
-	glm::vec3 diff2 = points[1] - points[3];
-	glm::vec3 diff3 = points[2] - points[3];
-
-	Eigen::Matrix3d volumeSpace;
-	volumeSpace << diff1.x, diff2.x, diff3.x,
-				   diff1.y, diff2.y, diff3.y,
-				   diff1.z, diff2.z, diff3.z;
-
-	auto det = volumeSpace.determinant();
-	return det > -0.00001 && det < 0.00001;
+	return LinearAlgebraUtils::getSimplexOrientation<glm::vec3>(points) == 0.0;
 }
 
 bool VoronoiDiagramUtils::isPointWithinSphere(glm::vec3 point, glm::vec3 points[4])
@@ -89,13 +75,4 @@ bool VoronoiDiagramUtils::isPointWithinSphere(glm::vec3 point, glm::vec3 points[
 	double detC = c.fullPivLu().determinant();
 
 	return detC > 0;
-}
-
-std::vector<glm::ivec4> VoronoiDiagramUtils::calculateDelaunayTetrahedra(const std::vector<glm::vec3>& points)
-{
-	DelaunayTree<glm::vec3, glm::ivec4> tree(points);
-//	std::cout << "BEGIN" << std::endl;
-	auto output = tree.calculate();
-//	std::cout << "END" << std::endl;
-	return output;
 }

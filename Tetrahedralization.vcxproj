@@ -100,11 +100,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\repos\Tetrahedralization\Resources\GLEW\include\GL;D:\repos\Tetrahedralization\Resources\GLFW\include\GLFW;D:\repos\Tetrahedralization\Resources\GLM\glm;D:\repos\Tetrahedralization\Resources\SOIL\src;D:\repos\Tetrahedralization\Resources\assimp\include\assimp;D:\repos\Tetrahedralization\Resources\eigen;D:\repos\Tetrahedralization\Resources\boost_1_67_0;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\repos\Tetrahedralization\Resources\GLEW\include\GL;D:\repos\Tetrahedralization\Resources\GLFW\include\GLFW;D:\repos\Tetrahedralization\Resources\GLM\glm;D:\repos\Tetrahedralization\Resources\eigen;D:\repos\Tetrahedralization\Resources\boost_1_67_0;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.2\include;D:\repos\Tetrahedralization\GraphicsEngine\GraphicsEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>D:\repos\Tetrahedralization\Resources\GLEW\vs15_x64\lib\Release;D:\repos\Tetrahedralization\Resources\GLFW\vs15_x64\src\Release;D:\repos\Tetrahedralization\Resources\assimp\libs\Release;D:\repos\Tetrahedralization\Resources\SOIL\projects\VC9\x64\Release;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\repos\Tetrahedralization\Resources\GLEW\vs15_x64\lib\Release;D:\repos\Tetrahedralization\Resources\GLFW\vs15_x64\src\Release;D:\repos\Tetrahedralization\Resources\assimp\libs\Release;D:\repos\Tetrahedralization\Resources\SOIL\projects\VC9\x64\Release;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.2\lib\x64;GraphicsEngine.lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;assimp-vc140-mt.lib;SOIL.lib;OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <StackReserveSize>
@@ -114,71 +116,47 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CLPass.cpp" />
     <ClCompile Include="ClusteringStageContext.cpp" />
     <ClCompile Include="ClusteringStageController.cpp" />
-    <ClCompile Include="Context.cpp" />
-    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DiscreteGeometryUtils.cpp" />
-    <ClCompile Include="FrameBuffer.cpp" />
-    <ClCompile Include="GeometricalMeshObjects.cpp" />
-    <ClCompile Include="GLFWWindowContext.cpp" />
-    <ClCompile Include="GraphicsObject.cpp" />
     <ClCompile Include="HalfSimplexRenderingUtils.cpp" />
-    <ClCompile Include="ImplicitGeometry.cpp" />
+    <ClCompile Include="ParametricShapes.cpp" />
     <ClCompile Include="LinearAlgebraUtils.cpp" />
     <ClCompile Include="OpenCLContext.cpp" />
-    <ClCompile Include="Pass.cpp" />
     <ClCompile Include="PointSamplingContext.cpp" />
     <ClCompile Include="PointSamplingController.cpp" />
-    <ClCompile Include="ReferencedGraphicsObject.cpp" />
-    <ClCompile Include="ShaderProgram.cpp" />
-    <ClCompile Include="ShaderProgramPipeline.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="SurfaceViewContext.cpp" />
     <ClCompile Include="SurfaceViewController.cpp" />
     <ClCompile Include="TetrahedralizationContext.cpp" />
     <ClCompile Include="TetrahedralizationController.cpp" />
-    <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="VoronoiDiagramUtils.cpp" />
-    <ClCompile Include="WindowContext.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="CLPass.h" />
     <ClInclude Include="ClusteringStageContext.h" />
     <ClInclude Include="ClusteringStageController.h" />
-    <ClInclude Include="Context.h" />
-    <ClInclude Include="Controller.h" />
-    <ClInclude Include="Decorator.h" />
-    <ClInclude Include="DirectedGraphNode.h" />
     <ClInclude Include="DiscreteGeometryUtils.h" />
-    <ClInclude Include="FPSCameraControls.h" />
-    <ClInclude Include="FrameBuffer.h" />
-    <ClInclude Include="GeometricalMeshObjects.h" />
-    <ClInclude Include="GLFWWindowContext.h" />
-    <ClInclude Include="GraphicsObject.h" />
     <ClInclude Include="HalfSimplexGeometryUtils.h" />
     <ClInclude Include="HalfSimplexRenderingUtils.h" />
     <ClInclude Include="HalfSimplices.h" />
-    <ClInclude Include="ImplicitGeometry.h" />
+    <ClInclude Include="ParametricShapes.h" />
     <ClInclude Include="KdTree.h" />
     <ClInclude Include="LinearAlgebraUtils.h" />
     <ClInclude Include="OpenCLContext.h" />
-    <ClInclude Include="Pass.h" />
     <ClInclude Include="PointSamplingContext.h" />
     <ClInclude Include="PointSamplingController.h" />
-    <ClInclude Include="ReferencedGraphicsObject.h" />
-    <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="ShaderProgramPipeline.h" />
     <ClInclude Include="SurfaceViewContext.h" />
     <ClInclude Include="SurfaceViewController.h" />
     <ClInclude Include="TetrahedralizationContext.h" />
     <ClInclude Include="TetrahedralizationController.h" />
-    <ClInclude Include="TextureManager.h" />
     <ClInclude Include="VoronoiDiagramUtils.h" />
-    <ClInclude Include="WindowContext.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="GraphicsEngine\GraphicsEngine\GraphicsEngine.vcxproj">
+      <Project>{4e09a46f-6e38-41b3-bc20-760e1f92284b}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

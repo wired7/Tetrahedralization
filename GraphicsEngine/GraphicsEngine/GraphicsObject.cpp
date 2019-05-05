@@ -2,6 +2,9 @@
 #include "GraphicsObject.h"
 #include "TextureManager.h"
 #include <fstream>
+#include <Importer.hpp>      // C++ importer interface
+#include <scene.h>           // Output data structure
+#include <postprocess.h>     // Post processing fla
 
 namespace Graphics
 {

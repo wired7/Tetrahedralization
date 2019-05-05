@@ -60,7 +60,14 @@ void ClusteringStageController::kC(GLFWwindow* window, int key, int scancode, in
 
 void ClusteringStageController::sC(GLFWwindow* window, double xOffset, double yOffset)
 {
+	FPSCamera* cam = reinterpret_cast<FPSCamera*>(controller->context->cameras[0]);
+	FPSCameraControls::moveCamera(cam, glm::vec3(-glm::sign(xOffset), 0, glm::sign(yOffset)));
 
+	double xpos, ypos;
+	glfwGetCursorPos(window, &xpos, &ypos);
+	SurfaceViewController::getPickingID((GeometryPass*)controller->context->passRootNode, xpos, ypos);
+
+	controller->context->dirty = true;
 }
 
 void ClusteringStageController::mC(GLFWwindow* window, int button, int action, int mods)

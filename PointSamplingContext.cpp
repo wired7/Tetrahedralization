@@ -9,7 +9,7 @@
 #include <glew.h>
 #include "gtc/matrix_transform.hpp"
 
-#define NUM_POINTS 100
+#define NUM_POINTS 10000
 #define POINT_SCALE 0.05f
 
 PointSamplingContext::PointSamplingContext(Graphics::DecoratedGraphicsObject* surface, FPSCamera* cam, Graphics::ReferenceManager* refMan) : refMan(refMan)

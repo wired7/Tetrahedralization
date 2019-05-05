@@ -2,9 +2,6 @@
 #include "Decorator.h"
 #include "glew.h"
 #include "glm.hpp"
-#include <Importer.hpp>      // C++ importer interface
-#include <scene.h>           // Output data structure
-#include <postprocess.h>     // Post processing fla
 
 // Make a factory to avoid creating erroneous patterns!
 // TODO: Add a uniform references array that somehow links to the shader

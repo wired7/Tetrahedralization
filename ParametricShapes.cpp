@@ -1,7 +1,7 @@
 #pragma once
-#include "ImplicitGeometry.h"
+#include "ParametricShapes.h"
 
-namespace ImplicitGeo
+namespace Parametric
 {
 	Plane::Plane(glm::vec3 point, glm::vec3 normal)
 	{

@@ -1,8 +1,8 @@
 #pragma once
 #include "HalfSimplices.h"
-#include "LinearAlgebraUtils.h"
-#include <glew.h>
 #include <algorithm>
+#include <functional>
+#include <glew.h>
 
 static class HalfSimplexGeometryUtils
 {

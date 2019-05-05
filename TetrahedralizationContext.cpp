@@ -8,7 +8,7 @@
 #include "VoronoiDiagramUtils.h"
 #include "LinearAlgebraUtils.h"
 #include "DiscreteGeometryUtils.h"
-#include "Pass.h"
+#include <thread>
 #include <algorithm>    // std::sort
 #include <map>
 #include <unordered_set>
@@ -28,7 +28,7 @@ TetrahedralizationContext::TetrahedralizationContext(Graphics::DecoratedGraphics
 	setupGeometries();
 	setupPasses({ "A", "A2", "EdgeA", "C", "D" }, { "B" });
 
-	std::vector<ImplicitGeo::Triangle> surfaceTriangles = DiscreteGeometryUtils::getTrianglesFromMesh(surface);
+	std::vector<Parametric::Triangle> surfaceTriangles = DiscreteGeometryUtils::getTrianglesFromMesh(surface);
 
 	std::thread t([=]
 	{
@@ -210,7 +210,7 @@ TetrahedralizationContext::TetrahedralizationContext(Graphics::DecoratedGraphics
 						simplexPositions.push_back(positions[index]);
 					}
 
-					if (VoronoiDiagramUtils::isSpaceDegenerate(&(simplexPositions[0])))
+					if (VoronoiDiagramUtils::isSpaceDegenerate(simplexPositions))
 					{
 						failed = true;
 						break;

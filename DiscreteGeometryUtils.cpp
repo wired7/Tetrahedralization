@@ -1,7 +1,8 @@
 #pragma once
 #include "DiscreteGeometryUtils.h"
+#include "GraphicsObject.h"
 
-std::vector<ImplicitGeo::Triangle> DiscreteGeometryUtils::getTrianglesFromMesh(Graphics::DecoratedGraphicsObject* object)
+std::vector<Parametric::Triangle> DiscreteGeometryUtils::getTrianglesFromMesh(Graphics::DecoratedGraphicsObject* object)
 {
 	auto vertexBuffer = (Graphics::MeshObject*)object->signatureLookup("VERTEX");
 	auto vertices = vertexBuffer->vertices;
@@ -9,7 +10,7 @@ std::vector<ImplicitGeo::Triangle> DiscreteGeometryUtils::getTrianglesFromMesh(G
 	auto transformBuffer = (Graphics::MatrixInstancedMeshObject<glm::mat4, float>*)object->signatureLookup("TRANSFORM");
 	auto transforms = transformBuffer->extendedData;
 
-	std::vector<ImplicitGeo::Triangle> triangles;
+	std::vector<Parametric::Triangle> triangles;
 
 	for (int i = 0; i < transforms.size(); i++)
 	{
@@ -23,7 +24,7 @@ std::vector<ImplicitGeo::Triangle> DiscreteGeometryUtils::getTrianglesFromMesh(G
 
 		for (int j = 0; j < indices.size(); j += 3)
 		{
-			triangles.push_back(ImplicitGeo::Triangle(transformedPts[indices[j]], transformedPts[indices[j + 1]], transformedPts[indices[j + 2]]));
+			triangles.push_back(Parametric::Triangle(transformedPts[indices[j]], transformedPts[indices[j + 1]], transformedPts[indices[j + 2]]));
 		}
 	}
 
@@ -66,7 +67,7 @@ std::pair<glm::vec3, glm::vec3> DiscreteGeometryUtils::getBoundingBox(Graphics::
 	return std::make_pair(minN, maxN);
 }
 
-bool DiscreteGeometryUtils::isPointInsideMesh(glm::vec3 point, const std::vector<ImplicitGeo::Triangle>& triangles)
+bool DiscreteGeometryUtils::isPointInsideMesh(glm::vec3 point, const std::vector<Parametric::Triangle>& triangles)
 {
 	glm::vec3 dir(1, 0, 0);
 	int sum = 0;

@@ -1,15 +1,15 @@
 #pragma once
 #include <vector>
 #include <iostream>
-#include "glm.hpp"
+#include <glm.hpp>
 
-namespace ImplicitGeo
+namespace Parametric
 {
-	class ImplicitGeometry
+	class ParametricShape
 	{
 	public:
-		ImplicitGeometry() {};
-		~ImplicitGeometry() {};
+		ParametricShape() {};
+		~ParametricShape() {};
 		virtual bool intersects(glm::vec3 origin, glm::vec3 direction) const = 0;
 		virtual float intersection(glm::vec3 origin, glm::vec3 direction) const = 0;
 		virtual glm::vec3 getNormal(glm::vec3 point) = 0;
@@ -17,7 +17,7 @@ namespace ImplicitGeo
 		virtual void translate(glm::vec3 trans) = 0;
 	};
 
-	class Plane : public ImplicitGeometry
+	class Plane : public ParametricShape
 	{
 	public:
 		glm::vec3 point;
@@ -33,7 +33,7 @@ namespace ImplicitGeo
 		void translate(glm::vec3) {};
 	};
 
-	class Sphere : public ImplicitGeometry
+	class Sphere : public ParametricShape
 	{
 	public:
 		glm::vec3 center;
