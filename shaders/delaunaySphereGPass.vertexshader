@@ -1,0 +1,41 @@
+#version 450 core
+
+// Input vertex data, different for all executions of this shader.
+layout(location = 0) in vec3 vertexPos;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec4 color;
+layout(location = 3) in mat4 transform;
+
+out gl_PerVertex {
+    vec4 gl_Position;
+    float gl_PointSize;
+    float gl_ClipDistance[];
+};
+
+// Output data ; will be interpolated for each fragment.
+out vec4 vColor;
+flat out vec3 n;
+out vec3 pos;
+flat out uint oID;
+
+// Values that stay constant for the whole mesh.
+uniform mat4 View;
+uniform mat4 Projection;
+uniform mat4 Model;
+uniform uint selectedRef;
+
+void main(){
+	
+	vec3 vertexOutput = vertexPos;
+
+	vColor = color;
+
+	gl_Position = Projection * View * Model * transform * vec4(vertexOutput, 1);
+
+	pos = gl_Position.xyz;
+
+	n = (transpose(inverse(View * Model * transform)) * vec4(normal,0)).xyz;
+	n = normalize(n);
+
+	oID = 100000000;
+}

@@ -1,0 +1,35 @@
+#version 420 core
+
+// Interpolated values from the vertex shaders
+in vec4 vColor;
+in vec3 FragPos;
+in vec3 n;
+
+uniform mat4 View;
+
+// Ouput data
+out vec4 color;
+
+void main(){
+	float alpha = vColor.w;
+	// Output color = color specified in the vertex shader, 
+	// interpolated between all 3 surrounding vertices
+
+	vec3 E = vec3(0,0,0) - FragPos;
+	E = normalize(E);
+	
+	vec3 lightSource = inverse(View)[3].xyz;
+	
+	float distance = length(lightSource - FragPos);
+	
+	vec3 l = (View * vec4(lightSource, 1)).xyz - FragPos;
+	 
+	l = normalize(l);
+
+	float cosTheta = clamp(dot(n, l), 0, 1);
+	
+	vec3 R = reflect(-l,n);
+	float cosAlpha = clamp(dot(E,R), 0, 1);
+
+	color =  vec4(vColor.xyz * cosTheta, alpha);
+}

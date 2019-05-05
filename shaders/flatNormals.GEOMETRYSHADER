@@ -1,0 +1,44 @@
+#version 450 core
+
+layout(triangles) in;
+layout(triangle_strip, max_vertices = 3) out;
+
+in vec3 pos[3];
+in vec3 n[3];
+in vec4 vColor[3];
+flat in uint oID[3];
+
+in gl_PerVertex
+{
+  vec4 gl_Position;
+  float gl_PointSize;
+  float gl_ClipDistance[];
+} gl_in[];
+
+out vec3 worldPos;
+flat out vec3 worldNormal;
+out vec4 worldColor;
+flat out uint worldOID;
+
+out gl_PerVertex
+{
+  vec4 gl_Position;
+  float gl_PointSize;
+  float gl_ClipDistance[];
+};
+
+void main(void)
+{
+	worldNormal = normalize(n[0] + n[1] + n[2]);
+
+	for(int i = 0; i < 3; ++i)
+	{
+		worldPos = pos[i];
+		worldColor = vColor[i];
+		worldOID = oID[i];
+		gl_Position = gl_in[i].gl_Position;
+		EmitVertex();
+	}
+
+	EndPrimitive();
+}

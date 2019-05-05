@@ -1,0 +1,28 @@
+#version 450 core
+
+// Interpolated values from the vertex shaders
+in vec4 worldColor;
+in vec3 worldNormal;
+in vec3 worldPos;
+flat in uint worldOID;
+flat in uint worldSelected;
+in vec3 dist;
+
+// Ouput data
+layout(location = 0) out vec4 color;
+layout(location = 1) out vec3 colorNormal;
+layout(location = 2) out vec3 colorPosition;
+layout(location = 3) out uint colorID;
+layout(location = 4) out uint colorSelected;
+
+void main()
+{
+	float nearD = min(min(dist[0], dist[1]), dist[2]);
+	float edgeIntensity = exp2(-1.0 * nearD * nearD);
+
+	color = edgeIntensity * vec4(0.1, 0.1, 0.1, 1.0) + (1.0 - edgeIntensity) * worldColor;
+	colorNormal = worldNormal;
+	colorPosition = worldPos;
+	colorID = worldOID;
+	colorSelected = worldSelected;
+}

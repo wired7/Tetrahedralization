@@ -1,0 +1,59 @@
+#version 450 core
+
+// Input vertex data, different for all executions of this shader.
+layout(location = 0) in vec3 vertexPos;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in mat4 transform;
+layout(location = 6) in uint objectID;
+layout(location = 7) in uint selectable;
+layout(location = 8) in uint highlightable;
+
+out gl_PerVertex {
+    vec4 gl_Position;
+    float gl_PointSize;
+    float gl_ClipDistance[];
+};
+
+// Output data ; will be interpolated for each fragment.
+out vec4 vColor;
+out vec3 n;
+out vec3 pos;
+flat out uint oID;
+
+// Values that stay constant for the whole mesh.
+uniform mat4 View;
+uniform mat4 Projection;
+uniform mat4 Model;
+uniform uint selectedRef;
+
+void main(){
+	
+	vec3 vertexOutput = vertexPos;
+
+	if(selectable > 0 && (objectID == selectedRef))
+	{
+		vColor = vec4(1, 1, 0, 1);
+		vertexOutput *= vec3(1, 3, 3);
+	}
+	else
+	{
+		if(highlightable > 0)
+		{
+			vColor = vec4(1, 0, 0, 1);
+		}
+		else
+		{
+			vColor = vec4(1, 1, 1, 1);
+		}
+	}
+
+
+	gl_Position = Projection * View * Model * transform * vec4(vertexOutput, 1);
+
+	pos = gl_Position.xyz;
+
+	n = (transpose(inverse(View * Model * transform)) * vec4(normal,0)).xyz;
+	n = normalize(n);
+
+	oID = objectID;
+}

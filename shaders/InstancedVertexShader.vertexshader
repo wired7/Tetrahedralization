@@ -1,0 +1,30 @@
+#version 430 core
+
+// Input vertex data, different for all executions of this shader.
+layout(location = 0) in vec3 vertexPosition_modelspace;
+layout(location = 1) in vec4 vertexColor;
+layout(location = 2) in vec3 normal;
+layout(location = 3) in vec2 tCoordinate;
+layout(location = 4) in mat4 Model;
+layout(location = 8) in vec4 flockColor;
+
+// Output data ; will be interpolated for each fragment.
+out vec3 n;
+out vec4 vColor;
+out vec3 FragPos;
+
+// Values that stay constant for the whole mesh.
+uniform mat4 View;
+uniform mat4 Projection;
+
+void main(){
+	
+	gl_Position = Projection * View * Model * vec4(vertexPosition_modelspace, 1);
+	
+	FragPos = vec3(Model * vec4(vertexPosition_modelspace, 1.0f));
+
+	n = (View * transpose(inverse(Model)) * vec4(normal,0)).xyz;
+	n = normalize(n);
+	
+	vColor = flockColor;
+}
