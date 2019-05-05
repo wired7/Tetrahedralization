@@ -6,7 +6,8 @@ namespace FPSCameraControls
 {
 	static void moveCamera(FPSCamera* cam, float xOffset, float yOffset)
 	{
-		if (cam->usingCamera) {
+		if (cam->usingCamera)
+		{
 			cam->processMouseMovement(xOffset, yOffset);
 		}
 	};
@@ -22,6 +23,7 @@ namespace FPSCameraControls
 		if (key == GLFW_KEY_F1 && action == GLFW_RELEASE)
 		{
 			bool& usingCamera = context->cameras[0]->usingCamera;
+
 			usingCamera = !usingCamera;
 
 			if (usingCamera)
@@ -54,6 +56,7 @@ namespace FPSCameraControls
 			if (action == GLFW_RELEASE)
 				context->cameras[0]->velocity += glm::vec3(0, 0, 1);
 		}
+
 		if (key == GLFW_KEY_A)
 		{
 			if (action == GLFW_PRESS)
@@ -61,6 +64,7 @@ namespace FPSCameraControls
 			if (action == GLFW_RELEASE)
 				context->cameras[0]->velocity -= glm::vec3(-1, 0, 0);
 		}
+
 		if (key == GLFW_KEY_D)
 		{
 			if (action == GLFW_PRESS)
@@ -68,6 +72,7 @@ namespace FPSCameraControls
 			if (action == GLFW_RELEASE)
 				context->cameras[0]->velocity -= glm::vec3(1, 0, 0);
 		}
+
 		if (key == GLFW_KEY_SPACE)
 		{
 			if (action == GLFW_PRESS)
@@ -75,6 +80,7 @@ namespace FPSCameraControls
 			if (action == GLFW_RELEASE)
 				context->cameras[0]->velocity -= glm::vec3(0, 1, 0);
 		}
+
 		if (key == GLFW_KEY_LEFT_CONTROL)
 		{
 			if (action == GLFW_PRESS)

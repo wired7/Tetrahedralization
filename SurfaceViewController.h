@@ -5,6 +5,7 @@
 
 class SurfaceViewContext;
 class GeometryPass;
+class FPSCamera;
 
 class SurfaceViewController : public Controller<SurfaceViewController, SurfaceViewContext>
 {

@@ -93,6 +93,9 @@
     <ClCompile Include="ClusteringStageContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLFWWindowContext.h">

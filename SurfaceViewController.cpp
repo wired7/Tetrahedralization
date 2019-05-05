@@ -110,6 +110,9 @@ void SurfaceViewController::kC(GLFWwindow* window, int key, int scancode, int ac
 
 void SurfaceViewController::sC(GLFWwindow* window, double xOffset, double yOffset)
 {
+	FPSCamera* cam = reinterpret_cast<FPSCamera*>(controller->context->cameras[0]);
+	FPSCameraControls::moveCamera(cam, glm::vec3(-glm::sign(xOffset), 0, glm::sign(yOffset)));
+
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
 	getPickingID((GeometryPass*)controller->context->passRootNode, xpos, ypos);

@@ -119,6 +119,7 @@
     <ClCompile Include="ClusteringStageContext.cpp" />
     <ClCompile Include="ClusteringStageController.cpp" />
     <ClCompile Include="Context.cpp" />
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DiscreteGeometryUtils.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="GeometricalMeshObjects.cpp" />
