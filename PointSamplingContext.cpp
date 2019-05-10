@@ -3,16 +3,17 @@
 #include "GeometricalMeshObjects.h"
 #include "ReferencedGraphicsObject.h"
 #include "DiscreteGeometryUtils.h"
-#include "FPSCameraControls.h"
 #include <thread>
 #include <random>
 #include <glew.h>
 #include "gtc/matrix_transform.hpp"
 
-#define NUM_POINTS 10000
+#define NUM_POINTS 5000
 #define POINT_SCALE 0.05f
+#define ADD_SURFACE_PTS
 
-PointSamplingContext::PointSamplingContext(Graphics::DecoratedGraphicsObject* surface, FPSCamera* cam, Graphics::ReferenceManager* refMan) : refMan(refMan)
+PointSamplingContext::PointSamplingContext(Graphics::DecoratedGraphicsObject* surface, FPSCamera* cam, Graphics::ReferenceManager* refMan) :
+	GeometryRenderingContext<PointSamplingController, FPSCamera, PointSamplingContext>(), refMan(refMan)
 {
 	cameras.push_back(cam);
 	geometries["SURFACE"] = surface;
@@ -55,7 +56,7 @@ void PointSamplingContext::setupGeometries(void)
 
 	geometries["VERTICES"] = selectable;
 
-	((GeometryPass*)passRootNode)->addRenderableObjects(selectable, "C");
+	((GeometryPass*)passRootNode)->addRenderableObjects(selectable, "VERTICES", "C");
 	dirty = true;
 }
 
@@ -63,18 +64,12 @@ void PointSamplingContext::setupPasses(const std::vector<std::string>& gProgramS
 {
 	GraphicsSceneContext::setupPasses(gProgramSignatures, lProgramSignatures);
 
-	((GeometryPass*)passRootNode->signatureLookup("GEOMETRYPASS"))->addRenderableObjects(geometries["SURFACE"], "A");
-	((LightPass*)((GeometryPass*)passRootNode)->signatureLookup("LIGHTPASS"))->addRenderableObjects(geometries["DISPLAYQUAD"], "B");
+	((GeometryPass*)passRootNode->signatureLookup("GEOMETRYPASS"))->addRenderableObjects(geometries["SURFACE"], "SURFACE", "A");
+	((LightPass*)((GeometryPass*)passRootNode)->signatureLookup("LIGHTPASS"))->addRenderableObjects(geometries["DISPLAYQUAD"], "DISPLAYQUAD", "B");
 }
 
 void PointSamplingContext::update(void)
 {
-	if (glm::length(cameras[0]->velocity) > 0)
-	{
-		FPSCameraControls::moveCamera(cameras[0], cameras[0]->velocity);
-		dirty = true;
-	}
-
 	if (pointsReady)
 	{
 		setupGeometries();
@@ -116,6 +111,7 @@ std::vector<glm::vec3> PointSamplingContext::sampleSurface(int sampleSize, Graph
 		}
 	}
 
+#ifdef ADD_SURFACE_PTS
 	auto meshObject = reinterpret_cast<Graphics::MeshObject*>(object->signatureLookup("VERTEX"));
 	auto vertices = meshObject->vertices;
 	auto transform = reinterpret_cast<Graphics::MatrixInstancedMeshObject<glm::mat4, float>*>(object->signatureLookup("TRANSFORM"))->extendedData[0];
@@ -124,6 +120,17 @@ std::vector<glm::vec3> PointSamplingContext::sampleSurface(int sampleSize, Graph
 	{
 		samples.push_back(glm::vec3(transform * glm::vec4(vertex.position, 1)));
 	}
+#endif
 
 	return samples;
+}
+
+std::vector<std::pair<std::string, std::string>> PointSamplingContext::getVolumePairs()
+{
+	return { std::make_pair("SURFACE", "A") };
+}
+
+std::vector<std::pair<std::string, std::string>> PointSamplingContext::getVertexPairs()
+{
+	return { std::make_pair("VERTICES", "C") };
 }

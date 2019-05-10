@@ -5,9 +5,7 @@ in vec2 TexCoords;
 uniform sampler2D gColors;
 uniform sampler2D gNormals;
 uniform sampler2D gPositions;
-uniform usampler2D gIDs;
 uniform usampler2D gSelected;
-
 uniform sampler2D gColors2;
 uniform sampler2D gNormals2;
 uniform sampler2D gPositions2;
@@ -25,7 +23,7 @@ void main()
 		vec3 outN = texture(gNormals, TexCoords).rgb;
 		vec3 outPos = texture(gPositions, TexCoords).rgb;
 
-		color = vec4(clamp(outColor.xyz * dot(vec3(0, 0, 1), normalize(outN)) / (0.01f + pow(outPos.z * 1.1f, 0.4f)), 0.0f, 1.0f), outColor.w);
+		color = vec4(clamp(outColor.xyz * dot(vec3(0, 0, 1), normalize(outN)) / (0.01f + pow(outPos.z * 1.1f, 0.4f)), 0.2f, 1.0f), outColor.w);
 	}
 	else
 	{
@@ -33,6 +31,6 @@ void main()
 		vec3 outN = texture(gNormals2, TexCoords).rgb;
 		vec3 outPos = texture(gPositions2, TexCoords).rgb;
 
-		color = vec4(clamp(outColor.xyz * dot(vec3(0, 0, 1), normalize(outN)) / (0.01f + pow(outPos.z * 1.1f, 0.4f)), 0.0f, 1.0f), outColor.w);
+		color = vec4(clamp(outColor.xyz * dot(vec3(0, 0, 1), normalize(outN)) / (0.01f + pow(outPos.z * 1.1f, 0.4f)), 0.2f, 1.0f), outColor.w);
 	}
 }

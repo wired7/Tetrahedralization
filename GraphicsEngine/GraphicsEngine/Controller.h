@@ -20,9 +20,9 @@ template<class T, class S> class Controller : public AbstractController
 protected:
 	static T* controller;
 	Controller();
-	~Controller() {};
+	virtual ~Controller() {};
 public:
-	S* context;
+	S* context = nullptr;
 	static T* getController();
 	void setContext(S* context);
 	void setController();
@@ -37,8 +37,15 @@ template<class T, class S> Controller<T, S>::Controller() : AbstractController()
 
 template<class T, class S> void Controller<T, S>::setController()
 {
-	controller = (T*)this;
+	controller = dynamic_cast<T*>(this);
 	auto window = reinterpret_cast<GLFWWindowContext*>(WindowContext::context)->window;
+
+	key_callback = T::kC;
+	scroll_callback = T::sC;
+	mouse_callback = T::mC;
+	mousePos_callback = T::mPC;
+	windowResize_callback = T::wRC;
+
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 	glfwSetMouseButtonCallback(window, mouse_callback);

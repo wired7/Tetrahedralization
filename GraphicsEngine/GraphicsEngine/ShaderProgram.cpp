@@ -34,16 +34,18 @@ ShaderProgram* ShaderProgram::getCompiledProgramBySignature(std::string signatur
 }
 
 
-ShaderProgram::ShaderProgram(std::string filePath, std::vector<std::tuple<const GLchar*, UniformType>> uIDs, std::string signature, GLenum shader, GLenum shaderBit) : 
+ShaderProgram::ShaderProgram(std::string filePath, std::vector<std::tuple<const GLchar*, UniformType>> uIDs,
+							 std::string signature, GLenum shader, GLenum shaderBit) : 
 	filePath(filePath), signature(signature), shader(shader), shaderBit(shaderBit)
 {
 	loadShaderProgram();
 	bindShaderProgram();
 
-	for (int i = 0; i < uIDs.size(); i++)
+	for (int i = 0, count = 0; i < uIDs.size(); i++)
 	{
-		uniformIDs.push_back(std::tuple<std::string, GLint, UniformType>(std::get<0>(uIDs[i]), glGetUniformLocation(program,
-							std::get<0>(uIDs[i])), std::get<1>(uIDs[i])));
+		uniformIDs[std::get<0>(uIDs[i])] = std::make_tuple(std::get<0>(uIDs[i]),
+			glGetUniformLocation(program, std::get<0>(uIDs[i])), std::get<1>(uIDs[i]),
+								 std::get<1>(uIDs[i]) == TEXTURE ? count++ : -1);
 	}
 }
 
@@ -114,12 +116,9 @@ void ShaderProgram::attachToPipeline(ShaderProgramPipeline* pipeline)
 
 GLint ShaderProgram::getLocationBySignature(std::string s)
 {
-	for (int i = 0; i < uniformIDs.size(); i++)
+	if (uniformIDs.find(s) != uniformIDs.end())
 	{
-		if (std::get<0>(uniformIDs[i]) == s)
-		{
-			return std::get<1>(uniformIDs[i]);
-		}
+		return std::get<1>(uniformIDs[s]);
 	}
 
 	return 0;

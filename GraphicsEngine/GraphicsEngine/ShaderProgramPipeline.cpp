@@ -134,11 +134,11 @@ GLint ShaderProgramPipeline::getUniformByID(std::string signature)
 {
 	for (int i = 0; i < attachedPrograms.size(); i++)
 	{
-		for (int j = 0; j < attachedPrograms[i]->uniformIDs.size(); j++)
+		for (const auto& uniformID : attachedPrograms[i]->uniformIDs)
 		{
-			if (std::get<0>(attachedPrograms[i]->uniformIDs[j]) == signature)
+			if (std::get<0>(uniformID.second) == signature)
 			{
-				return std::get<1>(attachedPrograms[i]->uniformIDs[j]);
+				return std::get<1>(uniformID.second);
 			}
 		}
 	}

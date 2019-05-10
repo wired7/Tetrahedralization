@@ -14,12 +14,12 @@ public:
 template<class ControllerType, class CameraType, class ContextType> class Context : public AbstractContext
 {
 public:
-	ControllerType* controller;
+	ControllerType* controller = nullptr;
 	std::vector<CameraType*> cameras;
 	AbstractContext* nextContext = nullptr;
 	AbstractContext* prevContext = nullptr;
 	Context();
-	~Context();
+	~Context() {};
 	virtual void setAsActiveContext(void);
 };
 
@@ -28,16 +28,12 @@ template<class ControllerType, class CameraType, class ContextType> Context<Cont
 {
 }
 
-template<class ControllerType, class CameraType, class ContextType> Context<ControllerType, CameraType, ContextType>::~Context()
-{
-}
-
 template<class ControllerType, class CameraType, class ContextType> void Context<ControllerType, CameraType, ContextType>::setAsActiveContext(void)
 {
 	activeContext = this;
 
 	controller = ControllerType::getController();
-	controller->setContext((ContextType*)this);
+	controller->setContext(dynamic_cast<ContextType*>(this));
 	controller->setController();
 }
 #pragma endregion
@@ -53,11 +49,12 @@ protected:
 	virtual void makeQuad(void);
 public:
 	bool dirty = true;
-	Pass* passRootNode;
+	Pass* passRootNode = nullptr;
 	std::map<std::string, Graphics::DecoratedGraphicsObject*> geometries;
 	GraphicsSceneContext() {};
 	~GraphicsSceneContext() {};
 	virtual void update(void);
+	void setAsActiveContext(void) override;
 };
 
 #pragma region GraphicsSceneContextTemplate
@@ -111,6 +108,14 @@ void GraphicsSceneContext<ControllerType, CameraType, ContextType>::makeQuad(voi
 template<class ControllerType, class CameraType, class ContextType>
 void GraphicsSceneContext<ControllerType, CameraType, ContextType>::update(void)
 {
+	for (const auto& camera : cameras)
+	{
+		if (camera->timeStepUpdate())
+		{
+			dirty = true;
+		}
+	}
+
 	if (dirty)
 	{
 		if (passRootNode != nullptr)
@@ -119,6 +124,13 @@ void GraphicsSceneContext<ControllerType, CameraType, ContextType>::update(void)
 		}
 		dirty = false;
 	}
+}
+
+template<class ControllerType, class CameraType, class ContextType>
+void GraphicsSceneContext<ControllerType, CameraType, ContextType>::setAsActiveContext(void)
+{
+	Context<ControllerType, CameraType, ContextType>::setAsActiveContext();
+	dirty = true;
 }
 
 #pragma endregion

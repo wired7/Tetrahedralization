@@ -7,6 +7,7 @@ layout(location = 2) in mat4 triangleTransform;
 layout(location = 6) in uint objectID;
 layout(location = 7) in uint selectable;
 layout(location = 8) in mat4 transform;
+layout(location = 12) in vec4 color;
 
 out gl_PerVertex {
     vec4 gl_Position;
@@ -37,7 +38,7 @@ void main(){
 	else
 	{
 		vertexOutput = vertexPos;
-		vColor = vec4(1, 0.3, 0, 1);
+		vColor = color;
 	}
 
 	gl_Position = Projection * View * Model * transform  * triangleTransform * vec4(vertexOutput, 1);

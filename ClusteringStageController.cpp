@@ -1,26 +1,14 @@
 #pragma once
 #include "ClusteringStageController.h"
-#include "SurfaceViewController.h"
-#include "FPSCameraControls.h"
 #include "TetrahedralizationContext.h"
 #include "ClusteringStageContext.h"
-#include "ReferencedGraphicsObject.h"
-#include "FrameBuffer.h"
 #include "OpenCLContext.h"
-#include <glew.h>
-#include "glfw3.h"
 
 #define MAX_SEPARATION_DISTANCE 20
 
 ClusteringStageController::ClusteringStageController()
 {
-	key_callback = kC;
-	scroll_callback = sC;
-	mouse_callback = mC;
-	mousePos_callback = mPC;
-	windowResize_callback = wRC;
 }
-
 
 ClusteringStageController::~ClusteringStageController()
 {
@@ -28,7 +16,6 @@ ClusteringStageController::~ClusteringStageController()
 
 void ClusteringStageController::kC(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-
 	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
 		((TetrahedralizationContext*)controller->context->prevContext)->setAsActiveContext();
 	}
@@ -40,7 +27,6 @@ void ClusteringStageController::kC(GLFWwindow* window, int key, int scancode, in
 		{
 			context->separationDistanceBuffer->bufferData[0] += 0.2f;
 			context->updateDistanceBuffer = true;
-			context->dirty = true;
 		}
 	}
 
@@ -51,23 +37,18 @@ void ClusteringStageController::kC(GLFWwindow* window, int key, int scancode, in
 		{
 			context->separationDistanceBuffer->bufferData[0] -= 0.2f;
 			context->updateDistanceBuffer = true;
-			context->dirty = true;
 		}
 	}
 
-	FPSCameraControls::cameraKeyboardControls<ClusteringStageContext>(controller->context, key, action);
+	controller->keyboardRendering(key, action);
+	controller->keyboardControls(window, key, action);
+	controller->updatePicker(window, "GEOMETRYPASS0");
 }
 
 void ClusteringStageController::sC(GLFWwindow* window, double xOffset, double yOffset)
 {
-	FPSCamera* cam = reinterpret_cast<FPSCamera*>(controller->context->cameras[0]);
-	FPSCameraControls::moveCamera(cam, glm::vec3(-glm::sign(xOffset), 0, glm::sign(yOffset)));
-
-	double xpos, ypos;
-	glfwGetCursorPos(window, &xpos, &ypos);
-	SurfaceViewController::getPickingID((GeometryPass*)controller->context->passRootNode, xpos, ypos);
-
-	controller->context->dirty = true;
+	controller->scrollMove(xOffset, yOffset);
+	controller->updatePicker(window, "GEOMETRYPASS0");
 }
 
 void ClusteringStageController::mC(GLFWwindow* window, int button, int action, int mods)
@@ -80,42 +61,33 @@ void ClusteringStageController::mC(GLFWwindow* window, int button, int action, i
 			double xpos = cursorPos.first;
 			double ypos = cursorPos.second;
 
-			auto stencil = (PickingBuffer*)((GeometryPass*)controller->context->passRootNode->signatureLookup("GEOMETRYPASS0"))->frameBuffer->signatureLookup("PICKING0");
+			auto gPass = (GeometryPass*)controller->context->passRootNode->signatureLookup("GEOMETRYPASS0");
+			auto stencil = (PickingBuffer*)gPass->frameBuffer->signatureLookup("PICKING0");
 
 			if (stencil)
 			{
 				auto widthHeight = WindowContext::context->getSize();
-
 				auto data = stencil->getValues(xpos, widthHeight.second - ypos);
-
 				int d = data[0];
-
-				auto instance = SurfaceViewController::getPickingID((GeometryPass*)controller->context->passRootNode->signatureLookup("GEOMETRYPASS0"),
-					xpos, ypos);
-
+				auto instance = controller->getPickingID(gPass, xpos, ypos);
 				auto tetraTransform = controller->context->refMan->getInstance(instance);
-
 				controller->context->calculateGeodesicFromTetra(controller->context->bufferInstanceToSimplexMap[tetraTransform.second]);
-
 				delete[] data;
 			}
 
 			controller->context->dirty = true;
 		}
 	}
+
+	controller->mouseClickControls(button, action);
 }
 
 void ClusteringStageController::mPC(GLFWwindow* window, double xpos, double ypos)
 {
-	FPSCameraControls::mousePositionControls<ClusteringStageController>(controller, xpos, ypos);
-
-	SurfaceViewController::getPickingID((GeometryPass*)controller->context->passRootNode->signatureLookup("GEOMETRYPASS0"), xpos, ypos);
-
-	controller->context->dirty = true;
+	controller->mousePosRotation(xpos, ypos);
+	controller->updatePicker(window, "GEOMETRYPASS0");
 }
 
 void ClusteringStageController::wRC(GLFWwindow* window, int a, int b)
 {
-	controller->context->cameras[0]->update();
-	controller->context->dirty = true;
 }

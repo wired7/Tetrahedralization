@@ -37,7 +37,7 @@ public:
 			}
 		}
 
-		return glm::sign(matrix.determinant());
+		return matrix.determinant();
 	}
 
 	static Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> originalEdgePseudo;

@@ -52,24 +52,33 @@ void DecoratedFrameBuffer::drawBuffers(void)
 	glDrawBuffers(buff.size(), &(buff[0]));
 }
 
-int DecoratedFrameBuffer::bindTexturesForPass(int textureOffset)
+int DecoratedFrameBuffer::bindTexturesForPass(std::unordered_set<std::string> texturesToSkip, int textureOffset)
 {
 	DecoratedFrameBuffer* currentBuffer = this;
-	int count = textureOffset;
-	for (; currentBuffer != nullptr; count++)
+	int usedTextures = textureOffset;
+	while(currentBuffer != nullptr)
 	{
+		if (texturesToSkip.find(currentBuffer->signature) == texturesToSkip.end())
+		{
+			usedTextures++;
+		}
+
 		currentBuffer = currentBuffer->child;
 	}
 
 	currentBuffer = this;
-	for (int i = count - 1; i >= textureOffset; i--)
+	for (int j = usedTextures - 1; j >= textureOffset;)
 	{
-		glActiveTexture(GL_TEXTURE0 + i);
-		glBindTexture(currentBuffer->type, currentBuffer->texture);
+		if (texturesToSkip.find(currentBuffer->signature) == texturesToSkip.end())
+		{
+			glActiveTexture(GL_TEXTURE0 + j--);
+			glBindTexture(currentBuffer->type, currentBuffer->texture);
+		}
+
 		currentBuffer = currentBuffer->child;
 	}
 
-	return count;
+	return usedTextures;
 }
 
 std::string DecoratedFrameBuffer::printOwnProperties(void)

@@ -1,19 +1,15 @@
 #pragma once
-#include "Controller.h"
+#include "FPSCameraController.h"
 #include "PointSamplingContext.h"
+#include "GeometryRenderingController.h"
 
 class PointSamplingContext;
 struct GLFWwindow;
 
-class PointSamplingController : public Controller<PointSamplingController, PointSamplingContext>
+class PointSamplingController : public FPSCameraController<PointSamplingController, PointSamplingContext>,
+								public GeometryRenderingController<PointSamplingController, PointSamplingContext>
 {
 public:
-	bool surfaceRendering = false;
-
-	bool firstMouse = false;
-	float lastX = 0;
-	float lastY = 0;
-
 	PointSamplingController();
 	~PointSamplingController();
 	static void kC(GLFWwindow*, int, int, int, int);

@@ -1,7 +1,6 @@
 #pragma once
 #include "ClusteringStageContext.h"
 #include "HalfSimplices.h"
-#include "FPSCameraControls.h"
 #include "HalfSimplexGeometryUtils.h"
 #include "OpenCLContext.h"
 #include "CLPass.h"
@@ -9,13 +8,16 @@
 #include <thread>
 #include <glew.h>
 
-ClusteringStageContext::ClusteringStageContext(Graphics::DecoratedGraphicsObject* mesh, Geometry::Manifold3<GLuint>* manifold,
-											   std::vector<glm::vec3>& positions, std::map<Geometry::HalfSimplex<3, GLuint>*, int>& simplexToBufferInstanceMap,
-											   Graphics::ReferenceManager* refMan, FPSCamera* cam) :
-											   mesh(mesh), refMan(refMan), simplexToBufferInstanceMap(simplexToBufferInstanceMap), positions(positions)
+ClusteringStageContext::ClusteringStageContext(
+	Graphics::DecoratedGraphicsObject* mesh, Geometry::Manifold3<GLuint>* manifold,
+	std::vector<glm::vec3>& positions, std::map<Geometry::HalfSimplex<3, GLuint>*, int>& simplexToBufferInstanceMap,
+	Graphics::ReferenceManager* refMan, FPSCamera* cam) :
+	GeometryRenderingContext<ClusteringStageController, FPSCamera, ClusteringStageContext>(),
+	mesh(mesh), refMan(refMan), simplexToBufferInstanceMap(simplexToBufferInstanceMap), positions(positions)
 {
 	cameras.push_back(cam);
 
+	bufferInstanceToSimplexMap.resize(simplexToBufferInstanceMap.size());
 	for (const auto& object : simplexToBufferInstanceMap)
 	{
 		bufferInstanceToSimplexMap[object.second] = object.first;
@@ -49,61 +51,11 @@ ClusteringStageContext::ClusteringStageContext(Graphics::DecoratedGraphicsObject
 	cameraDirBuffer->bindBuffer();
 	separationDistanceBuffer->bindBuffer();
 
-	setupPasses({"V1", "V2" }, { "SB" });
+	setupPasses({"V1", "V2"}, { "SB" });
 }
-
 
 ClusteringStageContext::~ClusteringStageContext()
 {
-}
-
-void ClusteringStageContext::calculateGeodesicFromTetra(Geometry::HalfSimplex<3, GLuint>* startingTetra)
-{
-	busy = true;
-	std::thread t([=] {
-		auto colorBufferObj = reinterpret_cast<Graphics::InstancedMeshObject<glm::vec4, float>*>(mesh->signatureLookup("TETRACOLORS"));
-		auto& tetraColors = colorBufferObj->extendedData;
-		std::map<Geometry::HalfSimplex<3, GLuint>*, float> minimumDistanceMap;
-		std::queue<std::pair<Geometry::HalfSimplex<3, GLuint>*, float>> neighbourQueue;
-		neighbourQueue.push(std::make_pair(startingTetra, 0));
-
-		while (!neighbourQueue.empty())
-		{
-			auto currentPair = neighbourQueue.front();
-			neighbourQueue.pop();
-
-			auto currentSimplex = currentPair.first;
-			float cummulativeDistance = currentPair.second;
-
-			if (minimumDistanceMap.find(currentSimplex) != minimumDistanceMap.end())
-			{
-				if (cummulativeDistance >= minimumDistanceMap[currentSimplex])
-				{
-					continue;
-				}
-			}
-
-			minimumDistanceMap[currentSimplex] = cummulativeDistance;
-			auto color = 1.0f - 1.0f / cummulativeDistance;
-			tetraColors[simplexToBufferInstanceMap[currentSimplex]] = glm::vec4(1, color, color, 1);
-			updateColorBuffer = true;
-
-			auto centroid = HalfSimplexGeometryUtils::getSimplexCentroid(currentSimplex, positions);
-
-			auto neighbours = currentSimplex->getAdjacentSimplices();
-
-			for (const auto& neighbour : neighbours)
-			{
-				auto n = reinterpret_cast<Geometry::HalfSimplex<3, GLuint>*>(neighbour);
-				auto otherCentroid = HalfSimplexGeometryUtils::getSimplexCentroid(n, positions);
-
-				neighbourQueue.push(std::make_pair(n, cummulativeDistance + length(otherCentroid - centroid)));
-			}
-		}
-
-		busy = false;
-	});
-	t.detach();
 }
 
 void ClusteringStageContext::setupGeometries(void)
@@ -161,35 +113,41 @@ void ClusteringStageContext::setupPasses(const std::vector<std::string>& gProgra
 	}
 
 	LightPass* lP = new LightPass(lPrograms, true);
-
+	lP->setTextureToIgnore("PICKING0", "GEOMETRYPASS0");
 	gP1->addNeighbor(lP);
 	gP2->addNeighbor(lP);
 
 	passRootNode = clP;
 
-	gP1->addRenderableObjects(geometries["VOLUMES"], "V1");
-	gP2->addRenderableObjects(geometries["VOLUMES"], "V2");
-	((LightPass*)((GeometryPass*)passRootNode)->signatureLookup("LIGHTPASS"))->addRenderableObjects(geometries["DISPLAYQUAD"], "SB");
+	gP1->addRenderableObjects(geometries["VOLUMES"], "VOLUMES", "V1");
+	gP2->addRenderableObjects(geometries["VOLUMES"], "VOLUMES", "V2");
+	((LightPass*)((GeometryPass*)passRootNode)->signatureLookup("LIGHTPASS"))->addRenderableObjects(geometries["DISPLAYQUAD"], "DISPLAYQUAD", "SB");
 
-//	gP1->setupVec4f(color1, "inputColor");
+	gP1->setupVec4f(color1, "inputColor");
 	gP2->setupVec4f(color2, "inputColor");
+//	auto windowSize = WindowContext::context->getSize();
+//	gP1->setupVec2i(glm::ivec2(windowSize.first, windowSize.second), "WIN_SCALE");
+}
+
+void ClusteringStageContext::updateCameraCL()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		cameraPosBuffer->bufferData[i] = cameras[0]->camPosVector[i];
+		cameraDirBuffer->bufferData[i] = cameras[0]->lookAtVector[i];
+	}
+
+	cameraPosBuffer->updateBuffer();
+	cameraDirBuffer->updateBuffer();
+
+	dirty = true;
 }
 
 void ClusteringStageContext::update(void)
 {
-	if (firstTime || glm::length(cameras[0]->velocity) > 0)
+	if (firstTime || cameras[0]->dirty)
 	{
-		FPSCameraControls::moveCamera(cameras[0], cameras[0]->velocity);
-
-		for (int i = 0; i < 3; i++)
-		{
-			cameraPosBuffer->bufferData[i] = cameras[0]->camPosVector[i];
-			cameraDirBuffer->bufferData[i] = cameras[0]->lookAtVector[i];
-		}
-
-		cameraPosBuffer->updateBuffer();
-		cameraDirBuffer->updateBuffer();
-		dirty = true;
+		updateCameraCL();
 		
 		if (firstTime)
 		{
@@ -213,4 +171,58 @@ void ClusteringStageContext::update(void)
 	}
 
 	GraphicsSceneContext<ClusteringStageController, FPSCamera, ClusteringStageContext>::update();
+}
+
+GeometryPass* ClusteringStageContext::getGeometryPass()
+{
+	return reinterpret_cast<GeometryPass*>(passRootNode->signatureLookup("GEOMETRYPASS0"));
+}
+
+void ClusteringStageContext::calculateGeodesicFromTetra(Geometry::HalfSimplex<3, GLuint>* startingTetra)
+{
+	busy = true;
+	std::thread t([=] {
+		auto colorBufferObj = reinterpret_cast<Graphics::InstancedMeshObject<glm::vec4, float>*>(mesh->signatureLookup("TETRACOLORS"));
+		auto& tetraColors = colorBufferObj->extendedData;
+		std::map<Geometry::HalfSimplex<3, GLuint>*, float> minimumDistanceMap;
+		std::queue<std::pair<Geometry::HalfSimplex<3, GLuint>*, float>> neighbourQueue;
+		neighbourQueue.push(std::make_pair(startingTetra, 0));
+
+		while (!neighbourQueue.empty())
+		{
+			auto currentPair = neighbourQueue.front();
+			neighbourQueue.pop();
+
+			auto currentSimplex = currentPair.first;
+			float cummulativeDistance = currentPair.second;
+
+			if (minimumDistanceMap.find(currentSimplex) != minimumDistanceMap.end())
+			{
+				if (cummulativeDistance >= minimumDistanceMap[currentSimplex])
+				{
+					continue;
+				}
+			}
+
+			minimumDistanceMap[currentSimplex] = cummulativeDistance;
+			auto color = 1.0f - glm::clamp(1.0f / cummulativeDistance, 0.0f, 1.0f);
+			tetraColors[simplexToBufferInstanceMap[currentSimplex]] = glm::vec4(1, color, color, 1);
+			updateColorBuffer = true;
+
+			auto centroid = HalfSimplexGeometryUtils::getSimplexCentroid(currentSimplex, positions);
+
+			auto neighbours = currentSimplex->getAdjacentSimplices();
+
+			for (const auto& neighbour : neighbours)
+			{
+				auto n = reinterpret_cast<Geometry::HalfSimplex<3, GLuint>*>(neighbour);
+				auto otherCentroid = HalfSimplexGeometryUtils::getSimplexCentroid(n, positions);
+
+				neighbourQueue.push(std::make_pair(n, cummulativeDistance + length(otherCentroid - centroid)));
+			}
+		}
+
+		busy = false;
+	});
+	t.detach();
 }

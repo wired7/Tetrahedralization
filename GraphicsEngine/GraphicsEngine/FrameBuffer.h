@@ -1,6 +1,7 @@
 #pragma once
 #include "Decorator.h"
-#include "glew.h"
+#include <unordered_set>
+#include <glew.h>
 
 class DecoratedFrameBuffer : public Decorator<DecoratedFrameBuffer>
 {
@@ -25,7 +26,7 @@ public:
 	void drawBuffer(std::string signature);
 	void drawBuffers(std::vector<std::string> signatures);
 
-	int bindTexturesForPass(int textureOffset = 0);
+	int bindTexturesForPass(std::unordered_set<std::string> texturesToSkip, int textureOffset = 0);
 	void bindTexturesForPass(std::string signature);
 	void bindTexturesForPass(std::vector<std::string> signatures);
 

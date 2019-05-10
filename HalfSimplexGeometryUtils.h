@@ -20,7 +20,7 @@ private:
 public:
 	template <const int simplexDim, typename embeddingDimVector>
 	static embeddingDimVector getSimplexCentroid(Geometry::HalfSimplex<simplexDim, GLuint>* currentSimplex,
-												 std::vector<embeddingDimVector>& positions)
+												 const std::vector<embeddingDimVector>& positions)
 	{
 		std::vector<Geometry::TopologicalStruct*> vertexVec;
 		std::unordered_set<Geometry::TopologicalStruct*> vertexSet;

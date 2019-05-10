@@ -9,10 +9,10 @@ namespace Graphics
 	class ReferenceManager
 	{
 	private:
-		unsigned int count = 0;
 		std::map<DecoratedGraphicsObject*, std::pair<DecoratedGraphicsObject*, std::vector<std::pair<int, int>>>> managedGraphicsObject;
 		std::map<int, std::pair<DecoratedGraphicsObject*, int>> inverseLookupMap;
 	public:
+		unsigned int count = 0;
 		ReferenceManager();
 		~ReferenceManager();
 		int assignNewGUID(DecoratedGraphicsObject* gObject, int indexWithinObject = 0);

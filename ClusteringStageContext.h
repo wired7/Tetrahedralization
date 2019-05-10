@@ -1,5 +1,5 @@
 #pragma once
-#include "Context.h"
+#include "GeometryRenderingContext.h"
 #include "ClusteringStageController.h"
 
 namespace Graphics
@@ -20,10 +20,11 @@ class CLKernel;
 template<typename T> class CLBuffer;
 template<typename T> class CLGLBuffer;
 
-class ClusteringStageContext : public GraphicsSceneContext<ClusteringStageController, FPSCamera, ClusteringStageContext>
+class ClusteringStageContext : public GeometryRenderingContext<ClusteringStageController, FPSCamera, ClusteringStageContext>
 {
 private:
 	bool firstTime = true;
+	void updateCameraCL();
 protected:
 	Graphics::DecoratedGraphicsObject* mesh = nullptr;
 	std::vector<glm::vec3>& positions;
@@ -41,12 +42,12 @@ protected:
 	void setupGeometries(void) override;
 	void setupPasses(const std::vector<std::string>& programSignatures = {}, const std::vector<std::string>& lProgramSignatures = {}) override;
 	void update(void) override;
-
+	GeometryPass* getGeometryPass() override;
 public:
 	bool updateColorBuffer = false;
 	bool busy = false;
 	Graphics::ReferenceManager* refMan = nullptr;
-	std::map<int, Geometry::HalfSimplex<3, GLuint>*> bufferInstanceToSimplexMap;
+	std::vector<Geometry::HalfSimplex<3, GLuint>*> bufferInstanceToSimplexMap;
 	CLBuffer<float>* separationDistanceBuffer = nullptr;
 	bool updateDistanceBuffer;
 	ClusteringStageContext(Graphics::DecoratedGraphicsObject* volume, Geometry::Manifold3<GLuint>* manifold,

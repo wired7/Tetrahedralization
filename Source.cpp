@@ -12,8 +12,7 @@
 
 // GLEW and GLFW initialization. Projection and View matrix setup
 int init() {
-
-	WindowContext::context = new GLFWWindowContext(800, 600, "VISUAL COMPUTING");
+	WindowContext::context = new GLFWWindowContext(0.8, 0.8, "VISUAL COMPUTING");
 
 	// Initialize GLEW
 	glewExperimental = true; // Needed for core profile
@@ -34,43 +33,65 @@ int init() {
 
 	srand(time(NULL));
 
-	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\gPass.VERTEXSHADER", { std::tuple<const GLchar*, UniformType>("View", MATRIX4FV),
-		std::tuple<const GLchar*, UniformType>("Projection", MATRIX4FV),  std::tuple<const GLchar*, UniformType>("Model", MATRIX4FV), std::tuple<const GLchar*, UniformType>("selectedRef", ONEUI) }, "GPASSVS");
+	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\gPass.VERTEXSHADER",
+		{ std::tuple<const GLchar*, UniformType>("View", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("Projection", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("Model", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("selectedRef", ONEUI) }, "GPASSVS");
 	
-	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\EdgeGPass.VERTEXSHADER", { std::tuple<const GLchar*, UniformType>("View", MATRIX4FV),
-		std::tuple<const GLchar*, UniformType>("Projection", MATRIX4FV),  std::tuple<const GLchar*, UniformType>("Model", MATRIX4FV), std::tuple<const GLchar*, UniformType>("selectedRef", ONEUI) }, "EDGEGPASSVS");
+	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\EdgeGPass.VERTEXSHADER",
+		{ std::tuple<const GLchar*, UniformType>("View", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("Projection", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("Model", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("selectedRef", ONEUI) }, "EDGEGPASSVS");
 
-	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\vGPass.VERTEXSHADER", { std::tuple<const GLchar*, UniformType>("View", MATRIX4FV),
-		std::tuple<const GLchar*, UniformType>("Projection", MATRIX4FV),  std::tuple<const GLchar*, UniformType>("Model", MATRIX4FV),
+	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\vGPass.VERTEXSHADER",
+		{ std::tuple<const GLchar*, UniformType>("View", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("Projection", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("Model", MATRIX4FV),
 		std::tuple<const GLchar*, UniformType>("selectedRef", ONEUI) }, "VOLUMEGPASSVS");
 
-	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\vGPass2.VERTEXSHADER", { std::tuple<const GLchar*, UniformType>("View", MATRIX4FV),
-		std::tuple<const GLchar*, UniformType>("Projection", MATRIX4FV),  std::tuple<const GLchar*, UniformType>("Model", MATRIX4FV),
-		std::tuple<const GLchar*, UniformType>("selectedRef", ONEUI), std::tuple<const GLchar*, UniformType>("inputColor", VECTOR4FV) }, "VOLUMEGPASSVS2");
+	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\vGPass2.VERTEXSHADER",
+		{ std::tuple<const GLchar*, UniformType>("View", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("Projection", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("Model", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("selectedRef", ONEUI),
+		std::tuple<const GLchar*, UniformType>("inputColor", VECTOR4FV) }, "VOLUMEGPASSVS2");
 
-	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\delaunaySphereGPass.VERTEXSHADER", { std::tuple<const GLchar*, UniformType>("View", MATRIX4FV),
-		std::tuple<const GLchar*, UniformType>("Projection", MATRIX4FV),  std::tuple<const GLchar*, UniformType>("Model", MATRIX4FV), std::tuple<const GLchar*, UniformType>("selectedRef", ONEUI) }, "DSGPASSVS");
+	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\delaunaySphereGPass.VERTEXSHADER",
+		{ std::tuple<const GLchar*, UniformType>("View", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("Projection", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("Model", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("selectedRef", ONEUI) }, "DSGPASSVS");
 
 	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\lightPass.VERTEXSHADER", {}, "LPASSVS");
 	
-	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\pointGPass.VERTEXSHADER", { std::tuple<const GLchar*, UniformType>("View", MATRIX4FV),
-		std::tuple<const GLchar*, UniformType>("Projection", MATRIX4FV),  std::tuple<const GLchar*, UniformType>("Model", MATRIX4FV), std::tuple<const GLchar*, UniformType>("selectedRef", ONEUI) }, "POINTGPASSVS");
+	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\pointGPass.VERTEXSHADER",
+		{ std::tuple<const GLchar*, UniformType>("View", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("Projection", MATRIX4FV), 
+		std::tuple<const GLchar*, UniformType>("Model", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("selectedRef", ONEUI) }, "POINTGPASSVS");
 
-	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\facetGPass.VERTEXSHADER", { std::tuple<const GLchar*, UniformType>("View", MATRIX4FV),
-		std::tuple<const GLchar*, UniformType>("Projection", MATRIX4FV),  std::tuple<const GLchar*, UniformType>("Model", MATRIX4FV), std::tuple<const GLchar*, UniformType>("selectedRef", ONEUI) }, "FACETGPASSVS");
+	ShaderProgram::getShaderProgram<VertexShaderProgram>("shaders\\facetGPass.VERTEXSHADER",
+		{ std::tuple<const GLchar*, UniformType>("View", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("Projection", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("Model", MATRIX4FV),
+		std::tuple<const GLchar*, UniformType>("selectedRef", ONEUI) }, "FACETGPASSVS");
 
 	ShaderProgram::getShaderProgram<FragmentShaderProgram>("shaders\\gPass.FRAGMENTSHADER", {}, "GPASSFS");
 	ShaderProgram::getShaderProgram<FragmentShaderProgram>("shaders\\gPass2.FRAGMENTSHADER", {}, "GPASSFS2");
 
-	ShaderProgram::getShaderProgram<FragmentShaderProgram>("shaders\\lightPass.FRAGMENTSHADER", { std::tuple<const GLchar*, UniformType>("gColors", TEXTURE),
-		std::tuple<const GLchar*, UniformType>("gNormals", TEXTURE), std::tuple<const GLchar*, UniformType>("gPositions", TEXTURE) }, "LPASSFS");
+	ShaderProgram::getShaderProgram<FragmentShaderProgram>("shaders\\lightPass.FRAGMENTSHADER",
+		{ std::tuple<const GLchar*, UniformType>("gColors", TEXTURE),
+		std::tuple<const GLchar*, UniformType>("gNormals", TEXTURE),
+		std::tuple<const GLchar*, UniformType>("gPositions", TEXTURE) }, "LPASSFS");
 
 	ShaderProgram::getShaderProgram<FragmentShaderProgram>("shaders\\stenciledLightPass.FRAGMENTSHADER", 
 		{
+			// TODO: ensure that order is somewhat preserved in map (maybe add an index?)
 			std::tuple<const GLchar*, UniformType>("gColors", TEXTURE),
 			std::tuple<const GLchar*, UniformType>("gNormals", TEXTURE),
 			std::tuple<const GLchar*, UniformType>("gPositions", TEXTURE),
-			std::tuple<const GLchar*, UniformType>("gIDs", TEXTURE),
 			std::tuple<const GLchar*, UniformType>("gSelected", TEXTURE),
 			std::tuple<const GLchar*, UniformType>("gColors2", TEXTURE),
 			std::tuple<const GLchar*, UniformType>("gNormals2", TEXTURE),

@@ -25,13 +25,13 @@ namespace Graphics
 
 			managedGraphicsObject[gObject].second.push_back(std::pair<int, int>(indexWithinObject, count));
 			inverseLookupMap[count++] = std::make_pair(gObject, indexWithinObject);
-			return count;
+			return count - 1;
 		}
 
 		managedGraphicsObject[gObject] = std::pair<DecoratedGraphicsObject*, std::vector<std::pair<int, int>>>(gObject,
 			{ std::pair<int, int>(indexWithinObject, count) });
 		inverseLookupMap[count++] = std::make_pair(gObject, indexWithinObject);
-		return count;
+		return count - 1;
 	}
 
 	int ReferenceManager::assignNewGUID(void)

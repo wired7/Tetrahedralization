@@ -1,22 +1,17 @@
 #pragma once
-#include "Controller.h"
+#include "FPSCameraController.h"
 #include "ClusteringStageContext.h"
+#include "GeometryRenderingController.h"
 
 class ClusteringStageContext;
 struct GLFWwindow;
 
-class ClusteringStageController : public Controller<ClusteringStageController, ClusteringStageContext>
+class ClusteringStageController : public FPSCameraController<ClusteringStageController, ClusteringStageContext>,
+								  public GeometryRenderingController<ClusteringStageController, ClusteringStageContext>
 {
 public:
-	bool surfaceRendering = true;
-
-	bool firstMouse = false;
-	float lastX = 0;
-	float lastY = 0;
-
 	ClusteringStageController();
 	~ClusteringStageController();
-
 	static void kC(GLFWwindow*, int, int, int, int);
 	static void sC(GLFWwindow*, double, double);
 	static void mC(GLFWwindow*, int, int, int);

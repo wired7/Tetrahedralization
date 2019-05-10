@@ -175,9 +175,11 @@
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Decorator.h" />
     <ClInclude Include="DirectedGraphNode.h" />
-    <ClInclude Include="FPSCameraControls.h" />
+    <ClInclude Include="FPSCameraController.h" />
     <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="GeometricalMeshObjects.h" />
+    <ClInclude Include="GeometryRenderingContext.h" />
+    <ClInclude Include="GeometryRenderingController.h" />
     <ClInclude Include="GLFWWindowContext.h" />
     <ClInclude Include="GraphicsObject.h" />
     <ClInclude Include="Pass.h" />

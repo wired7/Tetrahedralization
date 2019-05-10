@@ -1,5 +1,5 @@
 #pragma once
-#include "Context.h"
+#include "GeometryRenderingContext.h"
 #include "PointSamplingController.h"
 
 namespace Graphics
@@ -10,13 +10,15 @@ namespace Graphics
 
 class PointSamplingController;
 
-class PointSamplingContext : public GraphicsSceneContext<PointSamplingController, FPSCamera, PointSamplingContext>
+class PointSamplingContext : public GeometryRenderingContext<PointSamplingController, FPSCamera, PointSamplingContext>
 {
 protected:
 	bool pointsReady = false;
 	void setupCameras(void) override {};
 	void setupGeometries(void) override;
 	void setupPasses(const std::vector<std::string>& programSignatures = {}, const std::vector<std::string>& lProgramSignatures = {}) override;
+	std::vector<std::pair<std::string, std::string>> getVolumePairs() override;
+	std::vector<std::pair<std::string, std::string>> getVertexPairs() override;
 public:
 	Graphics::ReferenceManager* refMan;
 	bool readyToAdvance = false;

@@ -2,12 +2,11 @@
 #include "SurfaceViewContext.h"
 #include "HalfSimplexRenderingUtils.h"
 #include "ReferencedGraphicsObject.h"
-#include "FPSCameraControls.h"
 #include "HalfSimplices.h"
 #include <glew.h>
 #include "gtc/matrix_transform.hpp"
 
-SurfaceViewContext::SurfaceViewContext() : GraphicsSceneContext()
+SurfaceViewContext::SurfaceViewContext() : GeometryRenderingContext<SurfaceViewController, FPSCamera, SurfaceViewContext>()
 {
 	setupCameras();
 	setupGeometries();
@@ -20,7 +19,7 @@ void SurfaceViewContext::setupCameras(void)
 	int width = widthHeight.first;
 	int height = widthHeight.second;
 
-	cameras.push_back(new FPSCamera(glm::vec2(0, 0), glm::vec2(1, 1), glm::vec3(0, 0, 5), glm::vec3(0, 0, 0),
+	cameras.push_back(new FPSCamera(glm::vec2(0, 0), glm::vec2(1, 1), glm::vec3(0, 0, 10), glm::vec3(0, 0, 0),
 		glm::vec3(0, 1, 0), glm::perspective(45.0f, (float)width / height, 0.1f, 1000.0f)));
 }
 
@@ -63,12 +62,12 @@ void SurfaceViewContext::setupPasses(const std::vector<std::string>& gProgramSig
 
 	auto gP = ((GeometryPass*)passRootNode->signatureLookup("GEOMETRYPASS"));
 	
-	gP->addRenderableObjects(geometries["VOLUME"], "A");
-	gP->addRenderableObjects(geometries["VERTICES"], "C");
-	gP->addRenderableObjects(geometries["EDGES"], "EdgeA");
-	gP->addRenderableObjects(geometries["FACETS"], "D");
+	gP->addRenderableObjects(geometries["VOLUME"], "VOLUME", "A");
+	gP->addRenderableObjects(geometries["VERTICES"], "VERTICES", "C");
+	gP->addRenderableObjects(geometries["EDGES"], "EDGES", "EdgeA");
+	gP->addRenderableObjects(geometries["FACETS"], "FACETS", "D");
 	
-	((LightPass*)((GeometryPass*)passRootNode)->signatureLookup("LIGHTPASS"))->addRenderableObjects(geometries["DISPLAYQUAD"], "B");
+	((LightPass*)passRootNode->signatureLookup("LIGHTPASS"))->addRenderableObjects(geometries["DISPLAYQUAD"], "DISPLAYQUAD", "B");
 }
 
 void SurfaceViewContext::setupRenderableHalfEdges(Geometry::Manifold2<GLuint>* manifold, const std::vector<glm::vec3>& positions,
@@ -124,13 +123,22 @@ void SurfaceViewContext::setupRenderableFacets(Geometry::Manifold2<GLuint>* mani
 	geometries["FACETS"] = outputGeometry;
 }
 
-void SurfaceViewContext::update(void)
+std::vector<std::pair<std::string, std::string>> SurfaceViewContext::getVolumePairs()
 {
-	if (glm::length(cameras[0]->velocity) > 0) 
-	{
-		FPSCameraControls::moveCamera(cameras[0], cameras[0]->velocity);
-		dirty = true;
-	}
+	return { std::make_pair("VOLUME", "A") };
+}
 
-	GraphicsSceneContext<SurfaceViewController, FPSCamera, SurfaceViewContext>::update();
+std::vector<std::pair<std::string, std::string>> SurfaceViewContext::getSurfacePairs()
+{
+	return { std::make_pair("FACETS", "D") };
+}
+
+std::vector<std::pair<std::string, std::string>> SurfaceViewContext::getEdgePairs()
+{
+	return { std::make_pair("EDGES", "EdgeA") };
+}
+
+std::vector<std::pair<std::string, std::string>> SurfaceViewContext::getVertexPairs()
+{
+	return { std::make_pair("VERTICES", "C") };
 }
