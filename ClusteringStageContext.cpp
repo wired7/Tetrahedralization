@@ -125,8 +125,9 @@ void ClusteringStageContext::setupPasses(const std::vector<std::string>& gProgra
 
 	gP1->setupVec4f(color1, "inputColor");
 	gP2->setupVec4f(color2, "inputColor");
-//	auto windowSize = WindowContext::context->getSize();
-//	gP1->setupVec2i(glm::ivec2(windowSize.first, windowSize.second), "WIN_SCALE");
+	auto widthHeight = WindowContext::context->getSize();
+	windowSize = glm::ivec2(widthHeight.first, widthHeight.second);
+	gP1->setupVec2i(windowSize, "WIN_SCALE");
 }
 
 void ClusteringStageContext::updateCameraCL()

@@ -23,7 +23,7 @@ void main()
 		vec3 outN = texture(gNormals, TexCoords).rgb;
 		vec3 outPos = texture(gPositions, TexCoords).rgb;
 
-		color = vec4(clamp(outColor.xyz * dot(vec3(0, 0, 1), normalize(outN)) / (0.01f + pow(outPos.z * 1.1f, 0.4f)), 0.2f, 1.0f), outColor.w);
+		color = vec4(clamp(outColor.xyz * dot(vec3(0, 0, 1), normalize(outN)) / (0.01f + pow(outPos.z * 1.1f, 0.4f)), 0.0f, 1.0f), outColor.w);
 	}
 	else
 	{
@@ -31,6 +31,6 @@ void main()
 		vec3 outN = texture(gNormals2, TexCoords).rgb;
 		vec3 outPos = texture(gPositions2, TexCoords).rgb;
 
-		color = vec4(clamp(outColor.xyz * dot(vec3(0, 0, 1), normalize(outN)) / (0.01f + pow(outPos.z * 1.1f, 0.4f)), 0.2f, 1.0f), outColor.w);
+		color = vec4(clamp(outColor.xyz * dot(vec3(0, 0, 1), normalize(outN)) / (0.01f + pow(outPos.z * 1.1f, 0.4f)), 0.0f, 1.0f), outColor.w);
 	}
 }

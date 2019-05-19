@@ -1,6 +1,7 @@
 #pragma once
 #include "GeometryRenderingContext.h"
 #include "TetrahedralizationController.h"
+#include "ParametricShapes.h"
 
 namespace Graphics
 {
@@ -20,6 +21,7 @@ class TetrahedralizationContext : public GeometryRenderingContext<Tetrahedraliza
 private:
 	std::vector<glm::mat4> tetraTransforms;
 	std::vector<glm::mat4> triangleTransforms;
+	std::vector<Parametric::Triangle> surfaceTriangles;
 protected:
 	void setupCameras(void) override {};
 	void setupGeometries(void) override;

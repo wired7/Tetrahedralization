@@ -5,11 +5,11 @@
 
 namespace Parametric
 {
-	class ParametricShape
+	class Manifold
 	{
 	public:
-		ParametricShape() {};
-		~ParametricShape() {};
+		Manifold() {};
+		~Manifold() {};
 		virtual bool intersects(glm::vec3 origin, glm::vec3 direction) const = 0;
 		virtual float intersection(glm::vec3 origin, glm::vec3 direction) const = 0;
 		virtual glm::vec3 getNormal(glm::vec3 point) = 0;
@@ -17,7 +17,7 @@ namespace Parametric
 		virtual void translate(glm::vec3 trans) = 0;
 	};
 
-	class Plane : public ParametricShape
+	class Plane : public Manifold
 	{
 	public:
 		glm::vec3 point;
@@ -33,7 +33,7 @@ namespace Parametric
 		void translate(glm::vec3) {};
 	};
 
-	class Sphere : public ParametricShape
+	class Sphere : public Manifold
 	{
 	public:
 		glm::vec3 center;

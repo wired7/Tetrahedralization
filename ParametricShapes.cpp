@@ -146,7 +146,7 @@ namespace Parametric
 
 		for (int i = 0; i < 6; ++i)
 		{
-			if (abs(intersections[i]) <= 1.001f)
+			if (abs(intersections[i]) >= 0.001 && abs(intersections[i]) <= 0.99f)
 			{
 				return true;
 			}

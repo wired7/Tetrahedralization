@@ -24,6 +24,9 @@ class ClusteringStageContext : public GeometryRenderingContext<ClusteringStageCo
 {
 private:
 	bool firstTime = true;
+	glm::ivec2 windowSize;
+	glm::vec4 color1 = glm::vec4(0, 0, 1, 1);
+	glm::vec4 color2 = glm::vec4(1, 1, 0, 1);
 	void updateCameraCL();
 protected:
 	Graphics::DecoratedGraphicsObject* mesh = nullptr;
@@ -36,8 +39,6 @@ protected:
 	CLGLBuffer<float>* renderableBuffer = nullptr;
 	CLGLBuffer<float>* positionsBuffer = nullptr;
 	CLGLBuffer<glm::mat4>* transformsBuffer = nullptr;
-	glm::vec4 color1 = glm::vec4(0, 0, 1, 1);
-	glm::vec4 color2 = glm::vec4(1, 1, 0, 1);
 	void setupCameras(void) override {};
 	void setupGeometries(void) override;
 	void setupPasses(const std::vector<std::string>& programSignatures = {}, const std::vector<std::string>& lProgramSignatures = {}) override;

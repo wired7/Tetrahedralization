@@ -8,9 +8,9 @@
 #include <glew.h>
 #include "gtc/matrix_transform.hpp"
 
-#define NUM_POINTS 5000
+#define NUM_POINTS 100
 #define POINT_SCALE 0.05f
-#define ADD_SURFACE_PTS
+//#define ADD_SURFACE_PTS
 
 PointSamplingContext::PointSamplingContext(Graphics::DecoratedGraphicsObject* surface, FPSCamera* cam, Graphics::ReferenceManager* refMan) :
 	GeometryRenderingContext<PointSamplingController, FPSCamera, PointSamplingContext>(), refMan(refMan)

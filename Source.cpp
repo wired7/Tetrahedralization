@@ -99,7 +99,7 @@ int init() {
 		 }, "SLPASSFS");
 
 	ShaderProgram::getShaderProgram<GeometryShaderProgram>("shaders\\wireframeOverlay.GEOMETRYSHADER",
-		{ /*std::tuple<const GLchar*, UniformType>("WIN_SCALE", TWOUI) */}, "WIREFRAMEOVERLAYGS");
+		{ std::tuple<const GLchar*, UniformType>("WIN_SCALE", VECTOR2IV) }, "WIREFRAMEOVERLAYGS");
 
 	ShaderProgram::getShaderProgram<FragmentShaderProgram>("shaders\\wireframeOverlay.FRAGMENTSHADER", {}, "WIREFRAMEOVERLAYFS");
 

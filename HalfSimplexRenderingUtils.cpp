@@ -135,8 +135,8 @@ void HalfSimplexRenderingUtils::getRenderableTetraTransforms(const std::vector<G
 		if (LinearAlgebraUtils::getSimplexOrientation<glm::vec3>(tetraPositions) < 0)
 		{
 			auto tetraTemp = tetraPositions[0];
-			tetraPositions[0] = tetraPositions[2];
-			tetraPositions[2] = tetraTemp;
+			tetraPositions[0] = tetraPositions[1];
+			tetraPositions[1] = tetraTemp;
 		}
 
 		auto transform = LinearAlgebraUtils::getTransformFrom4Points(

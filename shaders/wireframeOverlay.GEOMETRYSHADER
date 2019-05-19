@@ -28,11 +28,11 @@ out gl_PerVertex
   float gl_ClipDistance[];
 };
 
-//uniform ivec2 WIN_SCALE;
+uniform ivec2 WIN_SCALE;
 
 void main(void)
 {
-	ivec2 WIN_SCALE = ivec2(1200, 800);
+//	ivec2 WIN_SCALE = ivec2(1200, 800);
 	vec2 p0 = WIN_SCALE * gl_in[0].gl_Position.xy / gl_in[0].gl_Position.w;
 	vec2 p1 = WIN_SCALE * gl_in[1].gl_Position.xy / gl_in[1].gl_Position.w;
 	vec2 p2 = WIN_SCALE * gl_in[2].gl_Position.xy / gl_in[2].gl_Position.w;
