@@ -102,16 +102,16 @@ namespace Graphics {
 	template <class T, class S> ExtendedMeshObject<T, S>::ExtendedMeshObject(DecoratedGraphicsObject* child, std::string bufferSignature) :
 		DecoratedGraphicsObject(child, bufferSignature)
 	{
-		layoutCount = child->layoutCount + 1;
-		VAO = child->VAO;
+		DecoratedGraphicsObject::layoutCount = child->layoutCount + 1;
+		DecoratedGraphicsObject::VAO = child->VAO;
 	}
 
 	template <class T, class S> ExtendedMeshObject<T, S>::ExtendedMeshObject(DecoratedGraphicsObject* child, std::vector<T> data, std::string bufferSignature) :
 		DecoratedGraphicsObject(child, bufferSignature), extendedData(data)
 	{
-		layoutCount = child->layoutCount + 1;
-		VAO = child->VAO;
-		bindBuffers();
+		DecoratedGraphicsObject::layoutCount = child->layoutCount + 1;
+		DecoratedGraphicsObject::VAO = child->VAO;
+		ExtendedMeshObject<T, S>::bindBuffers();
 	}
 
 	template <class T, class S> ExtendedMeshObject<T, S>::~ExtendedMeshObject(void)
@@ -121,7 +121,7 @@ namespace Graphics {
 
 	template <class T, class S> DecoratedGraphicsObject* ExtendedMeshObject<T, S>::make(void)
 	{
-		return new ExtendedMeshObject<T, S>(nullptr, extendedData, signature);
+		return new ExtendedMeshObject<T, S>(nullptr, ExtendedMeshObject<T, S>::extendedData, DecoratedGraphicsObject::signature);
 	}
 
 	template <class T, class S> void ExtendedMeshObject<T, S>::addVertex(glm::vec3 pos, glm::vec3 normal)
@@ -131,15 +131,16 @@ namespace Graphics {
 
 	template <class T, class S> void ExtendedMeshObject<T, S>::commitVBOToGPU(void)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, extendedData.size() * sizeof(T), &(extendedData[0]), GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, DecoratedGraphicsObject::VBO);
+		glBufferData(GL_ARRAY_BUFFER, ExtendedMeshObject<T, S>::extendedData.size() * sizeof(T),
+					 &(ExtendedMeshObject<T, S>::extendedData[0]), GL_DYNAMIC_DRAW);
 
-		glEnableVertexAttribArray(layoutCount - 1);
-		glVertexAttribPointer(layoutCount - 1, sizeof(T) / sizeof(S), GL_FLOAT, GL_FALSE, sizeof(T), (GLvoid*)0);
+		glEnableVertexAttribArray(DecoratedGraphicsObject::layoutCount - 1);
+		glVertexAttribPointer(DecoratedGraphicsObject::layoutCount - 1, sizeof(T) / sizeof(S), GL_FLOAT, GL_FALSE, sizeof(T), (GLvoid*)0);
 
 		glBindVertexArray(0);
 
-		commitedExtendedData = extendedData.size();
+		commitedExtendedData = ExtendedMeshObject<T, S>::extendedData.size();
 	}
 
 	template <class T, class S> void ExtendedMeshObject<T, S>::bindBuffers(void)
@@ -166,7 +167,7 @@ namespace Graphics {
 	{
 		if (dirty)
 		{
-			if (extendedData.size() != commitedExtendedData)
+			if (ExtendedMeshObject<T, S>::extendedData.size() != ExtendedMeshObject<T, S>::commitedExtendedData)
 			{
 				glBindVertexArray(VAO);
 				glDeleteBuffers(1, &VBO);
@@ -186,19 +187,6 @@ namespace Graphics {
 
 #pragma endregion
 
-	class TexturedMeshObject : public ExtendedMeshObject<glm::vec2, float>
-	{
-	public:
-		GLuint texture;
-
-		TexturedMeshObject(DecoratedGraphicsObject* child, char* filename, std::vector<glm::vec2> data);
-		TexturedMeshObject(DecoratedGraphicsObject* child, GLuint texture, std::vector<glm::vec2> data);
-		~TexturedMeshObject() {};
-
-		virtual void loadTexture(char* filePath);
-		virtual void enableBuffers(void);
-	};
-
 	template <class T, class S> class InstancedMeshObject : public ExtendedMeshObject<T, S>
 	{
 	public:
@@ -215,25 +203,27 @@ namespace Graphics {
 	};
 
 #pragma region InstancedMeshObjectTemplate
-	template <class T, class S> InstancedMeshObject<T, S>::InstancedMeshObject(DecoratedGraphicsObject* child, std::string bufferSignature, int divisor) :
+	template <class T, class S> InstancedMeshObject<T, S>::InstancedMeshObject(DecoratedGraphicsObject* child,
+																			   std::string bufferSignature, int divisor) :
 		ExtendedMeshObject<T, S>(child, bufferSignature), divisor(divisor)
 	{
-		instancedObject = (MeshObject*)signatureLookup("VERTEX");
+		instancedObject = (MeshObject*)DecoratedGraphicsObject::signatureLookup("VERTEX");
 	};
 
 	template <class T, class S> InstancedMeshObject<T, S>::InstancedMeshObject(DecoratedGraphicsObject* child, std::vector<T> data,
 																			   std::string bufferSignature, int divisor) :
 		ExtendedMeshObject<T, S>(child, bufferSignature), divisor(divisor)
 	{
-		instancedObject = (MeshObject*)signatureLookup("VERTEX");
-		extendedData = data;
-		bindBuffers();
+		instancedObject = (MeshObject*)DecoratedGraphicsObject::signatureLookup("VERTEX");
+		ExtendedMeshObject<T, S>::extendedData = data;
+		ExtendedMeshObject<T, S>::bindBuffers();
 	};
 
 	template <class T, class S> void InstancedMeshObject<T, S>::commitVBOToGPU(void)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, extendedData.size() * sizeof(T), &(extendedData[0]), GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, DecoratedGraphicsObject::VBO);
+		glBufferData(GL_ARRAY_BUFFER, ExtendedMeshObject<T, S>::extendedData.size() * sizeof(T),
+																&(ExtendedMeshObject<T, S>::extendedData[0]), GL_DYNAMIC_DRAW);
 
 		auto glType = GL_FLOAT;
 
@@ -246,16 +236,17 @@ namespace Graphics {
 			glType = GL_BYTE;
 		}
 
-		glEnableVertexAttribArray(layoutCount - 1);
-		glVertexAttribPointer(layoutCount - 1, sizeof(T) / sizeof(S), glType, GL_FALSE, sizeof(T), (GLvoid*)0);
-		glVertexAttribDivisor(layoutCount - 1, divisor);
+		glEnableVertexAttribArray(DecoratedGraphicsObject::layoutCount - 1);
+		glVertexAttribPointer(DecoratedGraphicsObject::layoutCount - 1, sizeof(T) / sizeof(S), glType, GL_FALSE, sizeof(T), (GLvoid*)0);
+		glVertexAttribDivisor(DecoratedGraphicsObject::layoutCount - 1, divisor);
 
 		glBindVertexArray(0);
 	}
 
 	template <class T, class S> void InstancedMeshObject<T, S>::draw(void)
 	{
-		glDrawElementsInstanced(GL_TRIANGLES, instancedObject->indices.size(), GL_UNSIGNED_INT, 0, extendedData.size() * divisor);
+		glDrawElementsInstanced(GL_TRIANGLES, InstancedMeshObject<T, S>::instancedObject->indices.size(), GL_UNSIGNED_INT, 0,
+								ExtendedMeshObject<T, S>::extendedData.size() * divisor);
 		glBindVertexArray(0);
 	}
 #pragma endregion
@@ -276,23 +267,24 @@ namespace Graphics {
 																						   std::string bufferSignature, int divisor) :
 		InstancedMeshObject<T, S>(child, bufferSignature, divisor)
 	{
-		layoutCount += 3;
+		DecoratedGraphicsObject::layoutCount += 3;
 	}
 
 	template <class T, class S> MatrixInstancedMeshObject<T, S>::MatrixInstancedMeshObject(DecoratedGraphicsObject* child, std::vector<T> data,
 																						   std::string bufferSignature, int divisor) :
 		InstancedMeshObject<T, S>(child, bufferSignature, divisor)
 	{
-		layoutCount += 3;
+		DecoratedGraphicsObject::layoutCount += 3;
 
-		extendedData = data;
-		bindBuffers();
+		ExtendedMeshObject<T, S>::extendedData = data;
+		ExtendedMeshObject<T, S>::bindBuffers();
 	}
 
 	template <class T, class S> void MatrixInstancedMeshObject<T, S>::commitVBOToGPU(void)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, extendedData.size() * sizeof(T), &(extendedData[0]), GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, DecoratedGraphicsObject::VBO);
+		glBufferData(GL_ARRAY_BUFFER, ExtendedMeshObject<T, S>::extendedData.size() * sizeof(T),
+					 &(ExtendedMeshObject<T, S>::extendedData[0]), GL_DYNAMIC_DRAW);
 
 		auto glType = GL_FLOAT;
 
@@ -305,11 +297,11 @@ namespace Graphics {
 			glType = GL_BYTE;
 		}
 
-		for (int i = layoutCount - 4, j = 0; i < layoutCount; i++, j++)
+		for (int i = DecoratedGraphicsObject::layoutCount - 4, j = 0; i < DecoratedGraphicsObject::layoutCount; i++, j++)
 		{
 			glEnableVertexAttribArray(i);
 			glVertexAttribPointer(i, sizeof(T) / 4 / sizeof(S), glType, GL_FALSE, sizeof(T), (GLvoid*)(sizeof(T) * j / 4));
-			glVertexAttribDivisor(i, divisor);
+			glVertexAttribDivisor(i, InstancedMeshObject<T, S>::divisor);
 		}
 
 		glBindVertexArray(0);

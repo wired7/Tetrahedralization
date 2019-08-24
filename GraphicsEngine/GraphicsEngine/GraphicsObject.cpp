@@ -226,28 +226,4 @@ namespace Graphics
 			count += mesh->mNumVertices;
 		}
 	}
-
-	TexturedMeshObject::TexturedMeshObject(DecoratedGraphicsObject* child, char* filename, std::vector<glm::vec2> data) : ExtendedMeshObject(child, data, "UVTEXTURE")
-	{
-		loadTexture(filename);
-	}
-
-	TexturedMeshObject::TexturedMeshObject(DecoratedGraphicsObject* child, GLuint texture, std::vector<glm::vec2> data) : ExtendedMeshObject(child, data, "UVTEXTURE"), texture(texture)
-	{
-
-	}
-
-	void TexturedMeshObject::loadTexture(char* filePath)
-	{
-		std::ifstream in(filePath, std::ios::in);
-		assert(in.is_open());
-
-		texture = TextureManager::instance()->addTexture(filePath);
-	}
-
-	void TexturedMeshObject::enableBuffers(void)
-	{
-		DecoratedGraphicsObject::enableBuffers();
-		glBindTexture(GL_TEXTURE_2D, texture);
-	}
 }

@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{F1E69B47-0C03-4E75-A567-346A1939CD2C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -106,8 +106,8 @@
       <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>D:\repos\Tetrahedralization\Resources\GLEW\vs15_x64\lib\Release;D:\repos\Tetrahedralization\Resources\GLFW\vs15_x64\src\Release;D:\repos\Tetrahedralization\Resources\assimp\libs\Release;D:\repos\Tetrahedralization\Resources\SOIL\projects\VC9\x64\Release;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.2\lib\x64;GraphicsEngine.lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;assimp-vc140-mt.lib;SOIL.lib;OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\repos\Tetrahedralization\Resources\GLEW\vs15_x64\lib\Release;D:\repos\Tetrahedralization\Resources\GLFW\vs15_x64\src\Release;D:\repos\Tetrahedralization\Resources\assimp\libs\Release;D:\repos\Tetrahedralization\Resources\SOIL\projects\VC9\x64\Release;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.2\lib\x64;D:\repos\Tetrahedralization\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;assimp-vc140-mt.lib;SOIL.lib;OpenCL.lib;GraphicsEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <StackReserveSize>
       </StackReserveSize>

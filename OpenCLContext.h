@@ -10,6 +10,7 @@ class OpenCLContext
 public:
 	cl_context context;
 	std::vector<cl_platform_id> platformIDs;
+	std::vector<cl_device_id> gpuDeviceIDs;
 	std::vector<cl_device_id> deviceIDs;
 	std::vector<cl_device_type> deviceTypes;
 	cl_int ret;

@@ -35,11 +35,11 @@ namespace Graphics
 	{
 		for (int i = 0; i < numInstances; i++)
 		{
-			extendedData.push_back(refMan->assignNewGUID(this, i));
+			ExtendedMeshObject<T, S>::extendedData.push_back(refMan->assignNewGUID(this, i));
 		}
 
-		glDeleteBuffers(1, &VBO);
-		bindBuffers();
+		glDeleteBuffers(1, &(InstancedMeshObject<T, S>::VBO));
+		InstancedMeshObject<T, S>::bindBuffers();
 	}
 
 

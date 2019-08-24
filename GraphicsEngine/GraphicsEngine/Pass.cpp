@@ -209,12 +209,6 @@ void RenderPass::executeOwnBehaviour()
 	// Set output textures
 	frameBuffer->drawBuffers();
 
-	// Clear buffers
-	if (clearBuff)
-	{
-		clearBuffers();
-	}
-
 	for (const auto pipeline : shaderPipelines)
 	{
 		// GL configuration
@@ -249,9 +243,10 @@ void GeometryPass::initFrameBuffers(void)
 	int width = widthHeight.first;
 	int height = widthHeight.second;
 
-	auto colorsBuffer = new ImageFrameBuffer(width, height, "COLORS");
-	auto normalsBuffer = new ImageFrameBuffer(colorsBuffer, width, height, "NORMALS");
-	DecoratedFrameBuffer* lastBuffer = new ImageFrameBuffer(normalsBuffer, width, height, "POSITIONS");
+	auto colorsBuffer = new ImageFrameBuffer(width, height, "COLORS", glm::vec4(1.0f), GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	auto normalsBuffer = new ImageFrameBuffer(colorsBuffer, width, height, "NORMALS", glm::vec4(), GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	DecoratedFrameBuffer* lastBuffer = new ImageFrameBuffer(normalsBuffer, width, height, "POSITIONS", glm::vec4(),
+															GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (int i = 0; i < pickingBufferCount; ++i)
 	{
@@ -264,13 +259,6 @@ void GeometryPass::initFrameBuffers(void)
 	}
 
 	frameBuffer = lastBuffer;
-}
-
-
-void GeometryPass::clearBuffers(void)
-{
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void GeometryPass::configureGL(const std::string& programSignature)
@@ -287,10 +275,8 @@ void GeometryPass::configureGL(const std::string& programSignature)
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
-	glDisable(GL_CULL_FACE);
-	glDisable(GL_MULTISAMPLE);
 
-//	glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 }
 
 void GeometryPass::setupObjectwiseUniforms(const std::string& programSignature, const std::string& signature)
@@ -348,15 +334,9 @@ LightPass::LightPass(std::map<std::string, ShaderProgramPipeline*> shaderPipelin
 void LightPass::initFrameBuffers(void)
 {
 	auto widthHeight = WindowContext::context->getSize();
-	auto imageFB = new ImageFrameBuffer(widthHeight.first, widthHeight.second, "MAINIMAGE");
+	auto imageFB = new ImageFrameBuffer(widthHeight.first, widthHeight.second, "MAINIMAGE", glm::vec4());
 
 	frameBuffer = imageFB;
-}
-
-void LightPass::clearBuffers(void)
-{
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void LightPass::configureGL(const std::string& programSignature)

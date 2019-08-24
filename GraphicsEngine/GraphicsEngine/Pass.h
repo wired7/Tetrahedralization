@@ -43,7 +43,6 @@ protected:
 	std::map<std::string, std::unordered_set<std::string>> texturesToIgnore;
 	bool terminal;
 	virtual void initFrameBuffers(void) = 0;
-	virtual void clearBuffers(void) {};
 	virtual void configureGL(const std::string& programSignature) {};
 	virtual void renderObjects(const std::string& programSignature);
 	virtual void setupObjectwiseUniforms(const std::string& programSignature, const std::string& signature) {};
@@ -117,7 +116,6 @@ class GeometryPass : public RenderPass
 {
 protected:
 	virtual void initFrameBuffers(void);
-	virtual void clearBuffers(void);
 	virtual void configureGL(const std::string& programSignature);
 	void setupObjectwiseUniforms(const std::string& programSignature, const std::string& signature) override;
 public:
@@ -140,7 +138,6 @@ class LightPass : public RenderPass
 {
 protected:
 	virtual void initFrameBuffers(void);
-	virtual void clearBuffers(void);
 	virtual void configureGL(const std::string& programSignature);
 public:
 	LightPass(std::map<std::string, ShaderProgramPipeline*> shaderPipelines, bool terminal = false);

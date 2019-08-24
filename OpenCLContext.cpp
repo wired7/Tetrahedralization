@@ -28,9 +28,8 @@ OpenCLContext::OpenCLContext()
 		std::cout << "Couldn't find an OpenCL platform!" << std::endl;
 	}
 
-	std::vector<cl_device_id> gpuDeviceIDs;
 	std::vector<cl_device_id> cpuDeviceIDs;
-
+	int gpuPlatform = 0;
 	for (int i = 0; i < ret_num_platforms; i++)
 	{
 		std::cout << "PLATFORM " << i << ":" << std::endl;
@@ -80,6 +79,7 @@ OpenCLContext::OpenCLContext()
 			if (deviceType == CL_DEVICE_TYPE_GPU)
 			{
 				gpuDeviceIDs.push_back(deviceIDs[j]);
+				gpuPlatform = i;
 			}
 			else if (deviceType == CL_DEVICE_TYPE_CPU)
 			{
@@ -95,7 +95,7 @@ OpenCLContext::OpenCLContext()
 		cl_context_properties props[] = {
 			CL_GL_CONTEXT_KHR, (cl_context_properties)glfwGetWGLContext(((GLFWWindowContext*)WindowContext::context)->window),
 			CL_WGL_HDC_KHR, (cl_context_properties)GetDC(glfwGetWin32Window(((GLFWWindowContext*)WindowContext::context)->window)),
-			CL_CONTEXT_PLATFORM, (cl_context_properties)platformIDs[1],
+			CL_CONTEXT_PLATFORM, (cl_context_properties)platformIDs[gpuPlatform],
 			0
 		};
 
@@ -144,16 +144,16 @@ CLKernel::CLKernel(std::string filePath, std::string kernelName, OpenCLContext* 
 	cl_program program = clCreateProgramWithSource(context->context, 1, (const char **)&source_str, &length, &(context->ret));
 
 	// Build the program
-	context->ret = clBuildProgram(program, 1, &(context->deviceIDs[1]), NULL, NULL, NULL);
+	context->ret = clBuildProgram(program, context->gpuDeviceIDs.size(), &(context->gpuDeviceIDs[0]), NULL, NULL, NULL);
 
 	// Check for proper compilation
 	size_t log_size;
 	char* build_log;
 
-	context->ret = clGetProgramBuildInfo(program, context->deviceIDs[1], CL_PROGRAM_BUILD_LOG, 0, NULL, &log_size);
+	context->ret = clGetProgramBuildInfo(program, context->gpuDeviceIDs[0], CL_PROGRAM_BUILD_LOG, 0, NULL, &log_size);
 	build_log = new char[log_size + 1];
 
-	context->ret = clGetProgramBuildInfo(program, context->deviceIDs[1], CL_PROGRAM_BUILD_LOG, log_size, build_log, NULL);
+	context->ret = clGetProgramBuildInfo(program, context->gpuDeviceIDs[0], CL_PROGRAM_BUILD_LOG, log_size, build_log, NULL);
 	build_log[log_size] = '\0';
 	printf("--- Build log ---\n ");
 	fprintf(stderr, "%s\n", build_log);

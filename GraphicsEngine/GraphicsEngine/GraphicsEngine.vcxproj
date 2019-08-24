@@ -18,12 +18,45 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Context.cpp" />
+    <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="FrameBuffer.cpp" />
+    <ClCompile Include="GeometricalMeshObjects.cpp" />
+    <ClCompile Include="GLFWWindowContext.cpp" />
+    <ClCompile Include="GraphicsObject.cpp" />
+    <ClCompile Include="Pass.cpp" />
+    <ClCompile Include="ReferencedGraphicsObject.cpp" />
+    <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="ShaderProgramPipeline.cpp" />
+    <ClCompile Include="WindowContext.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Context.h" />
+    <ClInclude Include="Controller.h" />
+    <ClInclude Include="Decorator.h" />
+    <ClInclude Include="DirectedGraphNode.h" />
+    <ClInclude Include="FPSCameraController.h" />
+    <ClInclude Include="FrameBuffer.h" />
+    <ClInclude Include="GeometricalMeshObjects.h" />
+    <ClInclude Include="GeometryRenderingContext.h" />
+    <ClInclude Include="GeometryRenderingController.h" />
+    <ClInclude Include="GLFWWindowContext.h" />
+    <ClInclude Include="GraphicsObject.h" />
+    <ClInclude Include="Pass.h" />
+    <ClInclude Include="ReferencedGraphicsObject.h" />
+    <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="ShaderProgramPipeline.h" />
+    <ClInclude Include="WindowContext.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{4E09A46F-6E38-41B3-BC20-760E1F92284B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>GraphicsEngine</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -49,7 +82,7 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -142,7 +175,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\repos\Tetrahedralization\Resources\GLEW\include\GL;D:\repos\Tetrahedralization\Resources\GLFW\include\GLFW;D:\repos\Tetrahedralization\Resources\GLM\glm;D:\repos\Tetrahedralization\Resources\assimp\include\assimp;D:\repos\Tetrahedralization\Resources\SOIL\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\GraphicsEngine;D:\repos\Tetrahedralization\Resources\GLEW\include\GL;D:\repos\Tetrahedralization\Resources\GLFW\include\GLFW;D:\repos\Tetrahedralization\Resources\GLM\glm;D:\repos\Tetrahedralization\Resources\assimp\include\assimp;D:\repos\Tetrahedralization\Resources\SOIL\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -154,41 +187,6 @@
       <AdditionalLibraryDirectories>D:\repos\Tetrahedralization\Resources\GLEW\vs15_x64\lib\Release;D:\repos\Tetrahedralization\Resources\GLFW\vs15_x64\src\Release;D:\repos\Tetrahedralization\Resources\assimp\libs\Release;D:\repos\Tetrahedralization\Resources\SOIL\projects\VC9\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Context.cpp" />
-    <ClCompile Include="Controller.cpp" />
-    <ClCompile Include="FrameBuffer.cpp" />
-    <ClCompile Include="GeometricalMeshObjects.cpp" />
-    <ClCompile Include="GLFWWindowContext.cpp" />
-    <ClCompile Include="GraphicsObject.cpp" />
-    <ClCompile Include="Pass.cpp" />
-    <ClCompile Include="ReferencedGraphicsObject.cpp" />
-    <ClCompile Include="ShaderProgram.cpp" />
-    <ClCompile Include="ShaderProgramPipeline.cpp" />
-    <ClCompile Include="TextureManager.cpp" />
-    <ClCompile Include="WindowContext.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Context.h" />
-    <ClInclude Include="Controller.h" />
-    <ClInclude Include="Decorator.h" />
-    <ClInclude Include="DirectedGraphNode.h" />
-    <ClInclude Include="FPSCameraController.h" />
-    <ClInclude Include="FrameBuffer.h" />
-    <ClInclude Include="GeometricalMeshObjects.h" />
-    <ClInclude Include="GeometryRenderingContext.h" />
-    <ClInclude Include="GeometryRenderingController.h" />
-    <ClInclude Include="GLFWWindowContext.h" />
-    <ClInclude Include="GraphicsObject.h" />
-    <ClInclude Include="Pass.h" />
-    <ClInclude Include="ReferencedGraphicsObject.h" />
-    <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="ShaderProgramPipeline.h" />
-    <ClInclude Include="TextureManager.h" />
-    <ClInclude Include="WindowContext.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

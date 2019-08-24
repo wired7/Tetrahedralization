@@ -2,6 +2,7 @@
 #include "Decorator.h"
 #include <unordered_set>
 #include <glew.h>
+#include <glm.hpp>
 
 class DecoratedFrameBuffer : public Decorator<DecoratedFrameBuffer>
 {
@@ -9,24 +10,28 @@ protected:
 	virtual void bindFBO(void);
 	virtual void bindTexture(void) = 0;
 	virtual void bindRBO(void);
-public:
 	GLuint FBO = 0;
 	GLuint texture;
 	GLuint RBO;
 	GLenum type;
+	GLenum clearType;
 	int attachmentNumber = 0;
 	int width;
 	int height;
+	glm::vec4 defaultColor;
+public:
 	DecoratedFrameBuffer() {};
-	DecoratedFrameBuffer(int width, int height, std::string signature, GLenum type);
-	DecoratedFrameBuffer(DecoratedFrameBuffer* child, int width, int height, std::string signature, GLenum type);
+	DecoratedFrameBuffer(int width, int height, std::string signature, GLenum type, glm::vec4 defaultColor = glm::vec4(),
+						 GLenum clearType = GL_COLOR_BUFFER_BIT);
+	DecoratedFrameBuffer(DecoratedFrameBuffer* child, int width, int height, std::string signature, GLenum type,
+						 glm::vec4 defaultColor = glm::vec4(), GLenum clearType = GL_COLOR_BUFFER_BIT);
 	~DecoratedFrameBuffer() {};
 
-	void drawBuffers(void);
+	virtual void drawBuffers(void);
 	void drawBuffer(std::string signature);
 	void drawBuffers(std::vector<std::string> signatures);
 
-	int bindTexturesForPass(std::unordered_set<std::string> texturesToSkip, int textureOffset = 0);
+	virtual int bindTexturesForPass(std::unordered_set<std::string> texturesToSkip, int textureOffset = 0);
 	void bindTexturesForPass(std::string signature);
 	void bindTexturesForPass(std::vector<std::string> signatures);
 
@@ -52,19 +57,10 @@ class ImageFrameBuffer : public DecoratedFrameBuffer
 protected:
 	virtual void bindTexture(void);
 public:
-	ImageFrameBuffer(int width, int height, std::string signature);
-	ImageFrameBuffer(DecoratedFrameBuffer* child, int width, int height, std::string signature);
+	ImageFrameBuffer(int width, int height, std::string signature, glm::vec4 defaultColor = glm::vec4(), GLenum clearType = GL_COLOR_BUFFER_BIT);
+	ImageFrameBuffer(DecoratedFrameBuffer* child, int width, int height, std::string signature, glm::vec4 defaultColor = glm::vec4(),
+					 GLenum clearType = GL_COLOR_BUFFER_BIT);
 	~ImageFrameBuffer() {};
-};
-
-class MSImageFrameBuffer : public DecoratedFrameBuffer
-{
-protected:
-	virtual void bindTexture(void);
-public:
-	MSImageFrameBuffer(int width, int height, std::string signature);
-	MSImageFrameBuffer(DecoratedFrameBuffer* child, int width, int height, std::string signature);
-	~MSImageFrameBuffer() {};
 };
 
 class PickingBuffer : public DecoratedFrameBuffer

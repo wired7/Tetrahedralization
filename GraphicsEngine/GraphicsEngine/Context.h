@@ -72,7 +72,7 @@ void GraphicsSceneContext<ControllerType, CameraType, ContextType>::setupPasses(
 	}
 
 	GeometryPass* gP = new GeometryPass(gPrograms, "GEOMETRYPASS", nullptr, 1);
-	gP->setupCamera(cameras[0]);
+	gP->setupCamera(GraphicsSceneContext<ControllerType, CameraType, ContextType>::cameras[0]);
 
 	std::map<std::string, ShaderProgramPipeline*> lPrograms;
 
@@ -108,7 +108,7 @@ void GraphicsSceneContext<ControllerType, CameraType, ContextType>::makeQuad(voi
 template<class ControllerType, class CameraType, class ContextType>
 void GraphicsSceneContext<ControllerType, CameraType, ContextType>::update(void)
 {
-	for (const auto& camera : cameras)
+	for (const auto& camera : GraphicsSceneContext<ControllerType, CameraType, ContextType>::cameras)
 	{
 		if (camera->timeStepUpdate())
 		{
